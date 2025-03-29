@@ -1,3 +1,5 @@
+import '../styles/pagination.css'
+
 export function Pagination({ totalPages, currentPage, onPageChange }) {
   const MAX_PAGE_BUTTONS = 7;
 
@@ -67,7 +69,7 @@ export function Pagination({ totalPages, currentPage, onPageChange }) {
           return (
             <span
               key={`ellipsis-${idx}`}
-              className="px-3 py-1 w-9 text-center text-gray-500 select-none"
+              className="px-3 py-1 w-10 text-center text-gray-500 select-none"
             >
               ...
             </span>
@@ -78,7 +80,7 @@ export function Pagination({ totalPages, currentPage, onPageChange }) {
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`px-3 py-1 rounded w-9 text-center cursor-pointer ${
+            className={`py-1 rounded w-9 text-center cursor-pointer ${
               currentPage === page
                 ? 'bg-[var(--main-blue)] text-white'
                 : 'bg-gray-200 hover:bg-gray-300'

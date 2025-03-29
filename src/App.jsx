@@ -6,6 +6,8 @@ import { Login } from './pages/Login.jsx';
 import { RecoverPwd } from './pages/RecoverPwd.jsx';
 import { Users } from './pages/Users.jsx';
 import { SignIn } from './pages/SignIn.jsx';
+import { AboutUs } from './pages/AboutUs.jsx';
+import { Help } from './pages/Help.jsx';
 
 function AppRoutes() {
   const location = useLocation();
@@ -24,7 +26,8 @@ function AppRoutes() {
               <Routes>
                 <Route path="/schedule" element={<Schedule />} />
                 <Route path="/users" element={<Users />} />
-                <Route path="/settings" element={<div>Ajustes</div>} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/aboutUs" element={<AboutUs />} />
               </Routes>
             </AppLayout>
           }

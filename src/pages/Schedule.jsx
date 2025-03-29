@@ -6,7 +6,7 @@ export const Schedule = () => {
     return (
       <section>
         <HeaderNav title='Administración de Horarios' />
-        <section className="flex flex-col items-center pt-10">
+        <section className="flex flex-col items-center pt-10 pb-15">
           <CreateSubject />
           <SubjectList />
         </section>

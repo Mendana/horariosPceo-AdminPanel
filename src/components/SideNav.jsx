@@ -1,16 +1,17 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronRight, Calendar, Users, Settings, User } from 'lucide-react';
+import { ChevronRight, Calendar, Users, Info, User, HandHelping  } from 'lucide-react';
 import { useState } from 'react';
 import '../styles/sideNav.css';
 
 export const SideNav = () => {
     const location = useLocation();
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     const navItems = [
         { name: 'Horarios', path: '/schedule', icon: <Calendar size={20} /> },
         { name: 'Usuarios', path: '/users', icon: <Users size={20} /> },
-        { name: 'Ajustes', path: '/settings', icon: <Settings size={20} /> },
+        { name: 'Ayuda', path: '/help', icon: <HandHelping size={20} /> },
+        { name: 'Sobre nosotros', path: '/aboutUs', icon: <Info size={20} /> },
     ];
 
     return (

@@ -2,16 +2,7 @@ import { useState, useEffect } from 'react';
 import { SubjectFilters } from './SubjectFilters';
 import { SubjectItem } from './SubjectItem';
 import { Pagination } from './Pagination';
-
-
-function calcularDuracion(horaInicio, horaFinal) {
-  const [h1, m1] = horaInicio.split(':').map(Number);
-  const [h2, m2] = horaFinal.split(':').map(Number);
-  const totalMin = (h2 * 60 + m2) - (h1 * 60 + m1);
-  const horas = Math.floor(totalMin / 60);
-  const minutos = totalMin % 60;
-  return `${horas > 0 ? horas + 'h ' : ''}${minutos > 0 ? minutos + 'min' : ''}`.trim();
-}
+import { ModalEditor } from './ModalEditor';
 
 
 const ITEMS_PER_PAGE = 10;
@@ -22,8 +13,9 @@ export function SubjectList() {
   const [nameFilter, setNameFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [editSubject, setEditSubject] = useState(null);
 
-  const filteredSubjects = subjects.filter(s => 
+  const filteredSubjects = subjects.filter(s =>
     (!courseFilter || s.curso.includes(courseFilter)) &&
     (!nameFilter || s.nombre.toLowerCase().includes(nameFilter.toLowerCase())) &&
     (!dateFilter || s.fecha.includes(dateFilter))
@@ -37,15 +29,25 @@ export function SubjectList() {
     setCurrentPage(page);
   };
 
+  const handleEdit = (subject) => {
+    setEditSubject(subject);
+  };
+
+  const handleSave = (updatedSubject) => {
+    setSubjects(prev =>
+      prev.map(s => s.id === updatedSubject.id ? updatedSubject : s)
+    );
+  };
+
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
         const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/year/${courseFilter}`);
         const data = await res.json();
-  
+
         const parsedSubjects = data.subjects.map((item, index) => {
           const fecha = `${item.year}-${String(item.mes).padStart(2, '0')}-${String(item.dia).padStart(2, '0')}`;
-  
+
           return {
             id: index + 1,
             nombre: item.subject_name,
@@ -56,13 +58,13 @@ export function SubjectList() {
             horaFinal: item.hora_final,
           };
         });
-  
+
         setSubjects(parsedSubjects);
       } catch (err) {
         console.error("Error al cargar horarios:", err);
       }
     };
-  
+
     fetchSubjects();
   }, [courseFilter]);
 
@@ -81,10 +83,10 @@ export function SubjectList() {
 
       <div className="border-t divide-y">
         {currentSubjects.length === 0 ? (
-          <p className="text-gray-500 pt-4">No se encontraron clases.</p>
+          <p className="text-gray-500 pt-4">No se encontraron clases para estos filtros. Pruebe con otros.</p>
         ) : (
           currentSubjects.map(subject => (
-            <SubjectItem key={subject.id} subject={subject} />
+            <SubjectItem key={subject.id} subject={subject} onEdit={handleEdit} />
           ))
         )}
       </div>
@@ -94,6 +96,14 @@ export function SubjectList() {
           totalPages={totalPages}
           currentPage={currentPage}
           onPageChange={handlePageChange}
+        />
+      )}
+      
+      {editSubject && (
+        <ModalEditor
+          subject={editSubject}
+          onClose={() => setEditSubject(null)}
+          onSave={handleSave}
         />
       )}
     </section>

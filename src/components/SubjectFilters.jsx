@@ -25,7 +25,6 @@ export function SubjectFilters({ nameFilter, setNameFilter, dateFilter, setDateF
         value={courseFilter}
         onChange={(newValue) => {
           setCourseFilter(newValue); // 👈 correcto
-          setCurrentPage(1);
         }}
       />
       <button
