@@ -1,0 +1,17 @@
+.nav-aside {
+    background-color: var(--main-black);
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-aside .nav-aside-selected-item {
+    background-color: var(--secondary-black);
+    border-radius: 10px;
+    box-shadow: 0 0 10px #232222;
+}
+
+.nav-aside-item:hover {
+    background-color: var(--secondary-black);
+    border-radius: 10px;
+    box-shadow: 0 0 10px #232222;
+    transition: all 0.3s ease-in-out;
+}

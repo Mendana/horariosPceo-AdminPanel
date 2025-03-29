@@ -1,0 +1,59 @@
+.main-login-container {
+    background-color: #d1d1d1;
+    border-radius: 20px;
+    box-shadow: 10px 10px 11px -3px rgba(0,0,0,0.5);
+}
+
+form .input-field {
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border: 1px solid #d1d1d1;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+form .input-field:focus {
+    box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.5);
+}
+
+form .input-field:hover {
+    box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.5);
+    cursor: pointer;
+}
+
+form .input-wrapper:hover .input-field {
+    box-shadow: 0px 0px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+form .submit-button {
+    background-color: var(--main-blue);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+form .submit-button:hover {
+    background-color: #00A3B5;
+    box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.5);
+    cursor: pointer;
+}
+
+.lost-pwd {
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.lost-pwd p {
+    color: var(--main-blue);
+}
+
+.lost-pwd:hover p, .lost-pwd:focus p {
+    color: #09555e;
+    text-decoration: underline;
+    cursor: pointer;
+}
