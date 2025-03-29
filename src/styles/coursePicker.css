@@ -1,0 +1,38 @@
+.coursepicker-container {
+    position: relative;
+    display: inline-block;
+    font-family: sans-serif;
+  }
+  
+  .course-button {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 120px;
+    text-align: left;
+  }
+  
+  .course-dropdown {
+    position: absolute;
+    top: 40px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    width: 100%;
+  }
+  
+  .course-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .course-option:hover {
+    background-color: #eee;
+  }
+  

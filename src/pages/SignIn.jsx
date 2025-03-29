@@ -3,7 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/login.css";
 
-export const Login = () => {
+export const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -19,30 +19,31 @@ export const Login = () => {
             return;
         }
 
+        console.log('username:', username); // Log para depuración
+        console.log('password:', password); // Log para depuración
+
+
         try {
-            const response = await fetch('TU_URL_API/login', {
+            const response = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users/create/', {
                 method: 'POST',
+                credentials: 'include', // Importante para manejar cookies
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    username,
-                    password
-                })
+                body: JSON.stringify({email: username, password: password})
             });
-
-            const data = await response.json();
-
+            console.log('response:', response); // Log para depuración
             if (response.ok) {
-                // Guardar el token en localStorage
-                localStorage.setItem('token', data.token);
-                // Redirigir al dashboard
-                navigate('/dashboard');
+                // No necesitas guardar el token manualmente ya que viene como cookie
+                navigate('/schedule');
             } else {
-                setError(data.message || 'Error al iniciar sesión');
+                const data = await response.json();
+                setError(data.message || 'Error al registrarse');
             }
         } catch (error) {
             setError('Error de conexión');
+            console.error('Error:', error); // Log para depuración
         }
     }
 
@@ -50,12 +51,12 @@ export const Login = () => {
         <main className="flex flex-row justify-center items-center h-screen bg-gray-100">
             <section className="main-login-container w-150 h-150">
                 <div className="flex flex-col justify-center items-center gap-5 h-full w-full">
-                    <h1 className="text-4xl font-bold mb-5">Iniciar Sesión</h1>
+                    <h1 className="text-4xl font-bold mb-5">Registrarse</h1>
                     {error && <p className="text-red-500">{error}</p>}
                     <form className="flex flex-col gap-5 w-80" onSubmit={handleSubmit}>
                         <input 
                             type="text" 
-                            placeholder="Usuario" 
+                            placeholder="Correo Universitario" 
                             className="input-field"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -77,11 +78,11 @@ export const Login = () => {
                             </button>
                         </div>
                         <button type="submit" className="submit-button">
-                            Iniciar Sesión
+                            Crear cuenta
                         </button>
                     </form>
-                    <Link to="/recover" className="lost-pwd">
-                        <p className="text-gray-600">¿Olvidaste tu contraseña?</p>
+                    <Link to="/" className="lost-pwd">
+                        <p className="text-gray-600">¿Solicitar rol administrador?</p>
                     </Link>
                 </div>
             </section>

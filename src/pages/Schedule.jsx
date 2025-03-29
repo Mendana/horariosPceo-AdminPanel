@@ -1,10 +1,14 @@
+import { HeaderNav } from "../components/HeaderNav.jsx";
+import { CreateSubject } from "../components/CreateSubject.jsx";
 
 export const Schedule = () => {
     return (
-      <div>
-        <h1 className="text-2xl font-bold">Horarios</h1>
-        <p>Aquí va el contenido de la página de horarios.</p>
-      </div>
+      <section>
+        <HeaderNav title='Administración de Horarios' />
+        <section className="flex flex-col items-center pt-10">
+          <CreateSubject />
+        </section>
+      </section>
     );
   };
   

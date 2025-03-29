@@ -15,5 +15,5 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: white;
+    background-color: var(--main-white);
 }
