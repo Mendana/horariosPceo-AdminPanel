@@ -1,0 +1,12 @@
+.arrow-page {
+    background-color: var(--main-black);
+    color: var(--main-white);
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.arrow-page:hover {
+    background-color: var(--secondary-black);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+}

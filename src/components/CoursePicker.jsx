@@ -1,9 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import '../styles/coursePicker.css';
 
-export const CoursePicker = () => {
-  const courses = ['Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto'];
-  const [selectedCourse, setSelectedCourse] = useState(courses[0]);
+const courseMap = {
+  '1': 'Primero',
+  '2': 'Segundo',
+  '3': 'Tercero',
+  '4': 'Cuarto',
+  '5': 'Quinto'
+};
+
+export const CoursePicker = ({ value, onChange }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const ref = useRef();
 
@@ -17,9 +23,9 @@ export const CoursePicker = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSelect = (course) => {
-    setSelectedCourse(course);
-    setShowDropdown(false);
+  const handleSelect = (key) => {
+    setShowDropdown(false);     // 👈 cierra primero
+    setTimeout(() => onChange(key), 0); // 👈 luego cambia valor (por si hay re-renders)
   };
 
   return (
@@ -27,20 +33,20 @@ export const CoursePicker = () => {
       <button
         type="button"
         className="course-button"
-        onClick={() => setShowDropdown((prev) => !prev)}
+        onClick={() => setShowDropdown(prev => !prev)}
       >
-        {selectedCourse}
+        {courseMap[value] || 'Seleccionar curso'}
       </button>
 
       {showDropdown && (
         <div className="course-dropdown">
-          {courses.map((course) => (
+          {Object.entries(courseMap).map(([key, label]) => (
             <div
-              key={course}
+              key={key}
               className="course-option"
-              onClick={() => handleSelect(course)}
+              onClick={() => handleSelect(key)}
             >
-              {course}
+              {label}
             </div>
           ))}
         </div>

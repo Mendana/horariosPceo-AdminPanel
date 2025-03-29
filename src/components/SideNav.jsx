@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Calendar, Users, Settings, User } from 'lucide-react';
+import { ChevronRight, Calendar, Users, Settings, User } from 'lucide-react';
 import { useState } from 'react';
 import '../styles/sideNav.css';
 
@@ -15,13 +15,13 @@ export const SideNav = () => {
 
     return (
         <aside
-            className={`${collapsed ? 'w-17 items-center' : 'w-64'
+            className={`${collapsed ? 'w-17 items-center' : 'w-64 expanded'
                 } nav-aside text-white h-screen p-4 flex flex-col`}
         >
             <div className="flex justify-between items-center mb-6">
                 {!collapsed && <h2 className="text-2xl font-bold">Opciones</h2>}
-                <button onClick={() => setCollapsed(!collapsed)} className="text-white">
-                    {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+                <button onClick={() => setCollapsed(!collapsed)} className={`text-white toggle-icon ${collapsed ? 'rotate-0' : 'rotate-180'}`}>
+                    {<ChevronRight size={20} />}
                 </button>
             </div>
 

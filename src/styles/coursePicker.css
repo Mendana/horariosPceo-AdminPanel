@@ -1,7 +1,6 @@
 .coursepicker-container {
     position: relative;
     display: inline-block;
-    font-family: sans-serif;
   }
   
   .course-button {
@@ -13,6 +12,12 @@
     font-size: 14px;
     min-width: 120px;
     text-align: left;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  }
+
+  .course-button:hover, .course-button:focus {
+    box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.5);
+    transition: box-shadow 0.3s ease-in-out;
   }
   
   .course-dropdown {
