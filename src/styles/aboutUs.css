@@ -3,4 +3,122 @@
     border-radius: 20px;
     box-shadow: 0 0px 11px rgba(0, 0, 0, 0.5);
     padding: 30px;
+    width: 90%;
+}
+
+.about-div h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    padding-bottom: 10px;
+
+}
+
+.about-div .main-text {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    padding-bottom: 10px;
+}
+
+.about-div h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.person-info {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    gap: 5px;
+    justify-content: center;
+    border-radius: 13px;
+    border: 2px solid #7a7a7a;
+    padding: 20px;
+    box-shadow: 0 0px 11px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+}
+
+.logo-icon {
+    transition: color 0.3s;
+}
+
+.logo-icon:hover {
+    color: var(--main-blue);
+    cursor: pointer;
+}
+
+.logo-icon .icon-img {
+    color: var(--secondary-black);
+    transition: color 0.3s;
+}
+
+.logo-icon:hover .icon-img {
+    color: var(--main-blue);
+}
+
+.github-button {
+    background-color: var(--secondary-black);
+    color: var(--main-white);
+    border: 2px solid #cfcfcf;
+    box-shadow: 0 0px 11px rgba(0, 0, 0, 0.2);
+    padding: 10px 16px;
+    width: 47%;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.github-button:hover {
+    background-color: var(--main-black);
+    border-color: var(--main-black);
+    cursor: pointer;
+    box-shadow: 0 0px 15px rgba(0, 0, 0, 0.5);
+}
+
+.github-button .icon-img {
+    transition: color 0.3s ease;
+}
+
+.github-button-disabled {
+    background-color: #7a7a7a;
+    color: var(--main-white);
+    border: 2px solid #cfcfcf;
+    padding: 10px 16px;
+    width: 47%;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.tech-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    padding: 4px;
+    text-align: center;
+    border: 2px solid #7a7a7a;
+    box-shadow: 0 0px 11px rgba(0, 0, 0, 0.2);
+    height: 80px;
+}
+
+.tech-container:hover {
+    box-shadow: 0 0px 11px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+.tech-container h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--main-blue);
 }

@@ -1,32 +1,69 @@
+import '../styles/aboutUs.css';
+import { AiOutlineGithub } from 'react-icons/ai';
+import { HeaderNav } from '../components/HeaderNav.jsx';
+
 export const Help = () => {
     return (
-        <section className="w-full py-16 bg-gray-50 px-6 flex flex-col items-center text-center">
-            <div className="max-w-4xl">
-                <h2 className="text-3xl font-bold mb-4">Ayuda</h2>
-                <p className="text-gray-600 text-lg mb-8">
-                    Aquí encontrarás respuestas a las preguntas más frecuentes y recursos útiles para ayudarte a navegar por nuestra plataforma.
-                </p>
+        <section>
+            <HeaderNav title='Ayuda'></HeaderNav>
+            <section className='flex flex-col items-center justify-center'>
+                <article className="about-div mb-10 mt-10">
+                    <h2>¿Necesitas ayuda?</h2>
 
-                <div className="grid md:grid-cols-2 gap-6 mb-12">
-                    <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
-                        <h3 className="text-xl font-semibold mb-2">Preguntas Frecuentes</h3>
-                        <p className="text-sm text-gray-600">
-                            Encuentra respuestas a las preguntas más comunes sobre el uso de la plataforma.
-                        </p>
+                    <p className="main-text mb-4">
+                        Si tienes dudas sobre cómo funciona esta herramienta o te has encontrado con algún problema, aquí tienes algunas respuestas rápidas que podrían ayudarte.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="help-card">
+                            <h4 className="text-lg font-semibold text-[var(--main-blue)]">¿Cómo añado una asignatura o examen?</h4>
+                            <p className="text-sm text-gray-700">
+                                En la sección principal, completa el formulario con los datos de la clase o examen (nombre, aula, fecha, hora, duración...) y haz clic en “Añadir”.
+                            </p>
+                        </div>
+
+                        <div className="help-card">
+                            <h4 className="text-lg font-semibold text-[var(--main-blue)]">¿Cómo edito una asignatura existente?</h4>
+                            <p className="text-sm text-gray-700">
+                                En la lista de asignaturas, haz clic en el botón “Editar” de la clase que quieras modificar. Se abrirá una ventana con sus datos para que los actualices.
+                            </p>
+                        </div>
+
+                        <div className="help-card">
+                            <h4 className="text-lg font-semibold text-[var(--main-blue)]">¿Cómo puedo filtrar los horarios?</h4>
+                            <p className="text-sm text-gray-700">
+                                Usa los campos de búsqueda por nombre, curso o fecha en la parte superior de la lista para encontrar rápidamente lo que necesitas.
+                            </p>
+                        </div>
+
+                        <div className="help-card">
+                            <h4 className="text-lg font-semibold text-[var(--main-blue)]">¿Qué hago si no se cargan los horarios?</h4>
+                            <p className="text-sm text-gray-700">
+                                Asegúrate de haber seleccionado el curso correctamente. Si el problema persiste, prueba a recargar la página o revisa tu conexión a internet.
+                            </p>
+                        </div>
+
+                        <div className="help-card md:col-span-2">
+                            <h4 className="text-lg font-semibold text-[var(--main-blue)]">¿Dónde puedo reportar un problema o sugerencia?</h4>
+                            <p className="text-sm text-gray-700">
+                                Puedes abrir una issue directamente en nuestro repositorio de GitHub o contactar con nosotros si quieres hacernos llegar alguna sugerencia o mejora.
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
-                        <h3 className="text-xl font-semibold mb-2">Tutoriales</h3>
-                        <p className="text-sm text-gray-600">
-                            Accede a tutoriales paso a paso para aprender a utilizar todas las funcionalidades de la plataforma.
-                        </p>
+                    <div className="flex justify-center mt-8">
+                        <button
+                            onClick={() => window.open("https://github.com/Mendana/horariosPceo-AdminPanel/issues", "_blank")}
+                            className="github-button justify-center"
+                        >
+                            <div className="flex flex-row items-center gap-2">
+                                <AiOutlineGithub size={24} className="icon-img" />
+                                <span>Reportar un problema</span>
+                            </div>
+                        </button>
                     </div>
-                </div>
-
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-xl transition">
-                    Contacta con Soporte
-                </button>
-            </div>
+                </article>
+            </section>
         </section>
     )
 }
