@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
+
 import "../styles/login.css";
 
 export const Login = () => {
@@ -9,37 +11,39 @@ export const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        
+
         if (!username || !password) {
             setError('Por favor, rellena todos los campos');
             return;
         }
 
         try {
-            const response = await fetch('TU_URL_API/login', {
+            const response = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username,
-                    password
+                    email: username,
+                    password: password
                 })
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                // Guardar el token en localStorage
                 localStorage.setItem('token', data.token);
-                // Redirigir al dashboard
-                navigate('/dashboard');
+                const userData = { email: username }; // o data.user si lo tienes
+                localStorage.setItem('user', JSON.stringify(userData));
+                login(userData);
+                navigate('/schedule');
             } else {
-                setError(data.message || 'Error al iniciar sesión');
+                setError(data.message || 'Error al iniciar sesión.');
             }
         } catch (error) {
             setError('Error de conexión');
@@ -53,9 +57,9 @@ export const Login = () => {
                     <h1 className="text-4xl font-bold mb-5">Iniciar Sesión</h1>
                     {error && <p className="text-red-500">{error}</p>}
                     <form className="flex flex-col gap-5 w-80" onSubmit={handleSubmit}>
-                        <input 
-                            type="text" 
-                            placeholder="Usuario" 
+                        <input
+                            type="text"
+                            placeholder="Correo administrativo"
                             className="input-field"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -82,6 +86,9 @@ export const Login = () => {
                     </form>
                     <Link to="/recover" className="lost-pwd">
                         <p className="text-gray-600">¿Olvidaste tu contraseña?</p>
+                    </Link>
+                    <Link to="/signin" className="lost-pwd">
+                        <p className="text-gray-600">Crear cuenta</p>
                     </Link>
                 </div>
             </section>

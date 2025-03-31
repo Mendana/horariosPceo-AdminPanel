@@ -1,12 +1,13 @@
 // AppLayout.jsx
 import { SideNav } from './components/SideNav';
+import { Outlet } from 'react-router-dom';
 
-const AppLayout = ({ children }) => {
+const AppLayout = () => {
   return (
     <div className="flex h-screen ">
       <SideNav />
       <main className="flex-1 bg-[var(--main-white)] overflow-auto">
-        {children}
+        <Outlet />
       </main>
     </div>
   );

@@ -13,15 +13,11 @@ export const SignIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        
+
         if (!username || !password) {
             setError('Por favor, rellena todos los campos');
             return;
         }
-
-        console.log('username:', username); // Log para depuración
-        console.log('password:', password); // Log para depuración
-
 
         try {
             const response = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users/create/', {
@@ -31,9 +27,8 @@ export const SignIn = () => {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({email: username, password: password})
+                body: JSON.stringify({ email: username, password: password })
             });
-            console.log('response:', response); // Log para depuración
             if (response.ok) {
                 // No necesitas guardar el token manualmente ya que viene como cookie
                 navigate('/schedule');
@@ -43,7 +38,6 @@ export const SignIn = () => {
             }
         } catch (error) {
             setError('Error de conexión');
-            console.error('Error:', error); // Log para depuración
         }
     }
 
@@ -54,9 +48,9 @@ export const SignIn = () => {
                     <h1 className="text-4xl font-bold mb-5">Registrarse</h1>
                     {error && <p className="text-red-500">{error}</p>}
                     <form className="flex flex-col gap-5 w-80" onSubmit={handleSubmit}>
-                        <input 
-                            type="text" 
-                            placeholder="Correo Universitario" 
+                        <input
+                            type="text"
+                            placeholder="Correo Universitario"
                             className="input-field"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -83,6 +77,9 @@ export const SignIn = () => {
                     </form>
                     <Link to="/" className="lost-pwd">
                         <p className="text-gray-600">¿Solicitar rol administrador?</p>
+                    </Link>
+                    <Link to="/" className="lost-pwd">
+                        <p className="text-gray-600">Iniciar sesión</p>
                     </Link>
                 </div>
             </section>

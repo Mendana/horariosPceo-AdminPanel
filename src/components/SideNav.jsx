@@ -41,7 +41,7 @@ export const SideNav = () => {
             </nav>
             <footer className='mt-auto pt-6 border-t border-gray-700'>
                 <Link
-                    to="/perfil"
+                    to="/myaccount"
                     className={`p-2 nav-aside-item flex items-center gap-2 ${location.pathname === '/perfil' ? 'nav-aside-selected-item' : ''
                         }`}
                 >

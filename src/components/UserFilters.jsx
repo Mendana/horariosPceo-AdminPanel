@@ -1,15 +1,8 @@
 import '../styles/subjectList.css';
 
-export function UserFilters({ nameFilter, setNameFilter, emailFilter, setEmailFilter, roleFilter, setRoleFilter }) {
+export function UserFilters({ emailFilter, setEmailFilter, roleFilter, setRoleFilter }) {
   return (
     <div className="flex flex-row justify-between mb-4 gap-4">
-      <input
-        type="text"
-        placeholder="Buscar por nombre"
-        className="input name-filter"
-        value={nameFilter}
-        onChange={(e) => setNameFilter(e.target.value)}
-      />
       <input
         type="text"
         placeholder="Buscar por correo"

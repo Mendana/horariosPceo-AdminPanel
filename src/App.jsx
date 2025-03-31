@@ -1,5 +1,6 @@
+// src/App.jsx
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AppLayout from './AppLayout';
 import { Schedule } from './pages/Schedule.jsx';
 import { Login } from './pages/Login.jsx';
@@ -8,40 +9,38 @@ import { Users } from './pages/Users.jsx';
 import { SignIn } from './pages/SignIn.jsx';
 import { AboutUs } from './pages/AboutUs.jsx';
 import { Help } from './pages/Help.jsx';
-
-function AppRoutes() {
-  const location = useLocation();
-  const isLogin = location.pathname === "/";
-
-  return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/recover" element={<RecoverPwd />} />
-      <Route path="/signin" element={<SignIn />} />
-      {!isLogin && (
-        <Route
-          path="*"
-          element={
-            <AppLayout>
-              <Routes>
-                <Route path="/schedule" element={<Schedule />} />
-                <Route path="/users" element={<Users />} />
-                <Route path="/help" element={<Help />} />
-                <Route path="/aboutUs" element={<AboutUs />} />
-              </Routes>
-            </AppLayout>
-          }
-        />
-      )}
-    </Routes>
-  );
-}
+import { AuthProvider } from './AuthContext';
+import PrivateRoute from './PrivateRoute';
+import { MyAccount } from './pages/MyAccount.jsx';
 
 function App() {
   return (
-    <Router>
-      <AppRoutes />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Rutas públicas */}
+          <Route path="/" element={<Login />} />
+          <Route path="/recover" element={<RecoverPwd />} />
+          <Route path="/signin" element={<SignIn />} />
+
+          {/* Rutas protegidas */}
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <AppLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route path="schedule" element={<Schedule />} />
+            <Route path="users" element={<Users />} />
+            <Route path="help" element={<Help />} />
+            <Route path="aboutUs" element={<AboutUs />} />
+            <Route path="myAccount" element={<MyAccount />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
