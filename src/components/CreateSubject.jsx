@@ -1,4 +1,4 @@
-import '../styles/CreateSubject.css'
+import '../styles/createSubject.css'
 import { FormItem } from './FormItem.jsx'
 import { TimePicker } from './TimePicker.jsx'
 import { DurationPicker } from './DurationPicker.jsx'
