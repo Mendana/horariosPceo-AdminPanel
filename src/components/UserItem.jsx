@@ -4,7 +4,7 @@ export function UserItem({ user, onEdit }) {
         <div>
           <p className="font-medium">{user.email}</p>
           <p className="text-sm text-gray-600">
-            {user.email}  |  Rol: {user.role}
+            {user.email}  |  Rol: {user.role === 'professor'? 'editor' : user.role}
           </p>
         </div>
         <button

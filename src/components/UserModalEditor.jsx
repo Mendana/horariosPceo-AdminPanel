@@ -3,33 +3,43 @@ import '../styles/subjectModal.css';
 import { X } from 'lucide-react';
 
 export function UserModalEditor({ user, onClose, onSave }) {
-  const [edited, setEdited] = useState({ ...user });
+  const [editedRole, setEditedRole] = useState(user.role);
   const [error, setError] = useState('');
-
-  const handleChange = (e) => {
-    setEdited(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
 
   const handleSave = async () => {
     setError('');
 
+    if (editedRole === user.role) {
+      onClose();
+      return;
+    }
+
+    const roleEndpoints = {
+      admin: 'make-admin',
+      professor: 'make-professor',
+      user: 'make-normal',
+    };
+
+    const endpoint = roleEndpoints[editedRole];
+
+    if (!endpoint) {
+      setError('Rol no válido');
+      return;
+    }
+
     try {
-      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/users/${user.id}`, {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/users/${endpoint}/${user.email}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Para que se envíen cookies HttpOnly
-        body: JSON.stringify(edited),
+        credentials: 'include',
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Error al guardar cambios');
+        throw new Error(data.message || 'Error al cambiar el rol');
       }
 
-      onSave(data); // Actualiza el estado global
+      onSave({ ...user, role: editedRole });
       onClose();
     } catch (err) {
       setError(err.message);
@@ -48,45 +58,28 @@ export function UserModalEditor({ user, onClose, onSave }) {
           </div>
 
           {error && (
-            <p className="text-red-500 text-sm mb-3">
-              {error}
-            </p>
+            <p className="text-red-500 text-sm mb-3">{error}</p>
           )}
 
           <div className="flex flex-col gap-3">
             <input
-              name="name"
-              value={edited.name}
-              onChange={handleChange}
-              className="input-field"
-              placeholder="Nombre"
-            />
-            <input
               name="email"
               type="email"
-              value={edited.email}
-              onChange={handleChange}
-              className="input-field"
+              value={user.email}
+              disabled
+              className="input-field bg-gray-100 cursor-not-allowed"
               placeholder="Correo electrónico"
-            />
-            <input
-              name="password"
-              type="password"
-              value={edited.password || ''}
-              onChange={handleChange}
-              className="input-field"
-              placeholder="Contraseña"
             />
             <select
               name="role"
-              value={edited.role}
-              onChange={handleChange}
+              value={editedRole}
+              onChange={(e) => setEditedRole(e.target.value)}
               className="input-field"
             >
               <option value="">Seleccionar rol</option>
               <option value="admin">Administrador</option>
+              <option value="professor">Editor</option>
               <option value="user">Usuario</option>
-              <option value="guest">Invitado</option>
             </select>
           </div>
 

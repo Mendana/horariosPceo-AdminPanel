@@ -26,40 +26,60 @@ export function CreateSubject({ onCreated }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     const horaFinal = calcularHoraFinal();
+    const dayParser = () => {
+      const date_parts = fecha.split('-');
+      const year = date_parts[0];
+      const month = date_parts[1];
+      const day = date_parts[2];
+      return {year, mes: month, dia: day};
+    }
 
-    try {
-      const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/schedule', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          subject_name: nombre,
-          clase: aula,
-          subject_year: curso,
-          fecha,
-          hora_inicio: horaInicio,
-          hora_final: horaFinal,
-        }),
+    const day_parsed = dayParser();
+
+    const subject = JSON.stringify({
+        subject_name: nombre,
+        clase: aula,
+        subject_year: curso,
+        day: day_parsed,
+        hora_inicio: horaInicio,
+        hora_final: horaFinal,
       });
 
-      const data = await res.json();
+    try {
+      const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/schedule/createSubject', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // ← Necesario si usas JWT en cookie HttpOnly
+        body: subject,
+      });
+      
+
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {
+      }
+      
+      console.log(data);
 
       if (!res.ok) {
         throw new Error(data.message || 'No se pudo crear la asignatura');
       }
-
-      // Limpia el formulario
+  
+      // Limpieza del formulario tras éxito
       setNombre('');
       setAula('');
       setCurso('1');
       setFecha(new Date().toISOString().split('T')[0]);
       setHoraInicio('09:00');
       setDuracion('01:00');
-
-      if (onCreated) onCreated(); // Refresca lista de asignaturas si pasas esta prop
-
+  
+      if (onCreated) onCreated(); // Refresca la lista si se pasó como prop
+  
     } catch (err) {
       setError(err.message);
     }
@@ -85,7 +105,7 @@ export function CreateSubject({ onCreated }) {
         <section className='flex flex-row gap-10 items-center pt-4'>
           <div className='flex flex-row gap-3 items-center pt-2'>
             <label className="text-sm font-medium">Curso: </label>
-            <CoursePicker value={curso} onChange={(e) => setCurso(e.target.value)} />
+            <CoursePicker value={curso} onChange={(value) => setCurso(value)} />
           </div>
           <div className='flex flex-row gap-3 items-center pt-2'>
             <label className="text-sm font-medium">Fecha: </label>

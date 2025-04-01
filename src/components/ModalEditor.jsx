@@ -5,9 +5,36 @@ import { TimePicker } from './TimePicker';
 import { DurationPicker } from './DurationPicker';
 
 export function ModalEditor({ subject, onClose, onSave }) {
-  const [edited, setEdited] = useState({ ...subject });
   const [error, setError] = useState('');
+  const calcularDuracion = (horaInicio, horaFinal) => {
+    const [h1, m1] = horaInicio.split(':').map(Number);
+    const [h2, m2] = horaFinal.split(':').map(Number);
+  
+    let minutosTotales = (h2 * 60 + m2) - (h1 * 60 + m1);
+    if (minutosTotales < 0) minutosTotales += 24 * 60;
+  
+    const horas = String(Math.floor(minutosTotales / 60)).padStart(2, '0');
+    const minutos = String(minutosTotales % 60).padStart(2, '0');
+    return `${horas}:${minutos}`;
+  };
+  
+  const [duracion, setDuracion] = useState(
+    calcularDuracion(subject.horaInicio, subject.horaFinal)
+  );
+  
+  const normalizeFecha = (fechaStr) => {
+    if (!fechaStr || !fechaStr.includes('-')) return fechaStr;
+  
+    const [dd, mm, yyyy] = fechaStr.split('-');
+    return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+  };
+    
+  const [edited, setEdited] = useState({
+    ...subject,
+    fecha: normalizeFecha(subject.fecha),
+  });
 
+  
   const handleChange = (e) => {
     setEdited(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -15,29 +42,48 @@ export function ModalEditor({ subject, onClose, onSave }) {
   const handleSave = async () => {
     setError('');
 
+    const dayParser = () => {
+      const date_parts = edited.fecha.split('-');
+      const year = date_parts[0];
+      const month = date_parts[1];
+      const day = date_parts[2];
+      return { year, mes: month, dia: day };
+    }
+
+    const day_parsed = dayParser();
+
+    const editedSubject = JSON.stringify({
+      subject_name: edited.nombre,
+      clase: edited.aula,
+      day: day_parsed,
+      hora_inicio: edited.horaInicio,
+      hora_final: edited.horaFinal,
+    });
+    console.log(editedSubject);
+    console.log(subject.id);
     try {
-      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/${subject.id}`, {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/patchSubject/${subject.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({
-          subject_name: edited.nombre,
-          clase: edited.aula,
-          fecha: edited.fecha,
-          hora_inicio: edited.horaInicio,
-          hora_final: edited.horaFinal,
-        }),
+        body: editedSubject,
       });
 
-      const data = await res.json();
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {
+        // Puede que no haya JSON, no pasa nada
+      }
 
+      console.log(data);
       if (!res.ok) {
         throw new Error(data.message || 'No se pudo actualizar la asignatura');
       }
 
-      onSave(data);
+      onSave({ ...edited, id: subject.id }); // Propaga cambios
       onClose();
     } catch (err) {
       setError(err.message);
@@ -49,15 +95,18 @@ export function ModalEditor({ subject, onClose, onSave }) {
   };
 
   const handleDurationChange = (duration) => {
-    // Calcular horaFinal sumando la duración a horaInicio
+    setDuracion(duration);
+  
     const [h, m] = edited.horaInicio.split(':').map(Number);
     const [dh, dm] = duration.split(':').map(Number);
+  
     const totalMinutes = h * 60 + m + dh * 60 + dm;
     const finalHour = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
     const finalMinutes = String(totalMinutes % 60).padStart(2, '0');
-
+  
     setEdited(prev => ({ ...prev, horaFinal: `${finalHour}:${finalMinutes}` }));
   };
+
 
   return (
     <div className="fixed top-0 left-0 w-full h-full z-40 pointer-events-none backdrop-blur-xs bg-black/30">
@@ -105,7 +154,7 @@ export function ModalEditor({ subject, onClose, onSave }) {
               </div>
               <div className='flex flex-row gap-2 items-center'>
                 <label className="text-gray-700">Duración:</label>
-                <DurationPicker onChange={handleDurationChange} />
+                <DurationPicker value={duracion} onChange={handleDurationChange} />
               </div>
             </div>
           </div>

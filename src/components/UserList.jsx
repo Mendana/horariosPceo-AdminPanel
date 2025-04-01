@@ -33,10 +33,9 @@ export function UserList() {
 
   const handleSave = (updatedUser) => {
     setUsers(prev =>
-      prev.map(u => u.id === updatedUser.id ? updatedUser : u)
+      prev.map(u => u.email === updatedUser.email ? updatedUser : u)
     );
-  };
-  
+  };  
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -54,9 +53,7 @@ export function UserList() {
         }
         
         const data = await res.json();
-
-        console.log(data);
-
+        
         const parsedUsers = data.map(user => ({
           email: user.email,
           role: user.rol,

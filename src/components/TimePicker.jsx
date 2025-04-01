@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import '../styles/timePicker.css';
 
-export const TimePicker = () => {
-  const [selectedTime, setSelectedTime] = useState({ hour: 12, minute: 0 });
+export const TimePicker = ({ value, onChange }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const ref = useRef();
 
@@ -12,8 +11,16 @@ export const TimePicker = () => {
     return `${h}:${m}`;
   };
 
+  const parseValue = (value) => {
+    const [hour, minute] = value.split(':').map(Number);
+    return { hour, minute };
+  };
+
+  const selectedTime = parseValue(value);
+
   const handleSelect = (hour, minute) => {
-    setSelectedTime({ hour, minute });
+    const formatted = formatTime({ hour, minute });
+    onChange(formatted); // ← actualiza el estado del padre
     setShowDropdown(false);
   };
 
@@ -28,7 +35,7 @@ export const TimePicker = () => {
   }, []);
 
   const hours = Array.from({ length: 14 }, (_, i) => i + 8);
-  const minutes = [0, 30]; // Puedes hacerlo más granular si quieres
+  const minutes = [0, 30];
 
   return (
     <div className="timepicker-container" ref={ref}>

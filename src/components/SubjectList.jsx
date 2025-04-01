@@ -44,11 +44,11 @@ export const SubjectList = forwardRef((props, ref) => {
       const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/year/${courseFilter}`);
       const data = await res.json();
 
-      const parsedSubjects = data.subjects.map((item, index) => {
-        const fecha = `${item.year}-${String(item.mes).padStart(2, '0')}-${String(item.dia).padStart(2, '0')}`;
+      const parsedSubjects = data.subjects.map(item => {
+        const fecha = `${String(item.day.dia).padStart(2, '0')}-${String(item.day.mes).padStart(2, '0')}-${item.day.year}`;
 
         return {
-          id: index + 1,
+          id: item.s_id,
           nombre: item.subject_name,
           aula: item.clase.trim(),
           curso: `${item.subject_year}`,
@@ -61,6 +61,25 @@ export const SubjectList = forwardRef((props, ref) => {
       setSubjects(parsedSubjects);
     } catch (err) {
       console.error("Error al cargar horarios:", err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/delete/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'No se pudo eliminar la asignatura');
+      }
+
+      // Elimina del estado local
+      setSubjects(prev => prev.filter(s => s.id !== id));
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -90,7 +109,10 @@ export const SubjectList = forwardRef((props, ref) => {
           <p className="text-gray-500 pt-4">No se encontraron clases para estos filtros. Pruebe con otros.</p>
         ) : (
           currentSubjects.map(subject => (
-            <SubjectItem key={subject.id} subject={subject} onEdit={handleEdit} />
+            <SubjectItem key={subject.id}
+              subject={subject}
+              onEdit={handleEdit}
+              onDelete={handleDelete} />
           ))
         )}
       </div>
@@ -102,7 +124,7 @@ export const SubjectList = forwardRef((props, ref) => {
           onPageChange={handlePageChange}
         />
       )}
-      
+
       {editSubject && (
         <ModalEditor
           subject={editSubject}

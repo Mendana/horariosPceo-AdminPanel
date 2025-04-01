@@ -1,10 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import '../styles/durationPicker.css';
 
-export const DurationPicker = () => {
-  const [selectedDuration, setSelectedDuration] = useState({ hours: 1, minutes: 0 });
+export const DurationPicker = ({ value, onChange }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const ref = useRef();
+
+  const parseValue = (value) => {
+    const [hours, minutes] = value.split(':').map(Number);
+    return { hours, minutes };
+  };
 
   const formatDuration = ({ hours, minutes }) => {
     const h = hours.toString().padStart(2, '0');
@@ -13,7 +17,8 @@ export const DurationPicker = () => {
   };
 
   const handleSelect = (hours, minutes) => {
-    setSelectedDuration({ hours, minutes });
+    const formatted = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    onChange(formatted);
     setShowDropdown(false);
   };
 
@@ -26,6 +31,8 @@ export const DurationPicker = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const selectedDuration = parseValue(value);
 
   // Genera duraciones de 0:30 a 8:00 con intervalos de 30 min
   const durations = [];
