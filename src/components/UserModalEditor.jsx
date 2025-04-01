@@ -4,14 +4,36 @@ import { X } from 'lucide-react';
 
 export function UserModalEditor({ user, onClose, onSave }) {
   const [edited, setEdited] = useState({ ...user });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setEdited(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSave = () => {
-    onSave(edited);
-    onClose();
+  const handleSave = async () => {
+    setError('');
+
+    try {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/users/${user.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Para que se envíen cookies HttpOnly
+        body: JSON.stringify(edited),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Error al guardar cambios');
+      }
+
+      onSave(data); // Actualiza el estado global
+      onClose();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -24,6 +46,12 @@ export function UserModalEditor({ user, onClose, onSave }) {
               <X size={30} />
             </button>
           </div>
+
+          {error && (
+            <p className="text-red-500 text-sm mb-3">
+              {error}
+            </p>
+          )}
 
           <div className="flex flex-col gap-3">
             <input
@@ -59,7 +87,6 @@ export function UserModalEditor({ user, onClose, onSave }) {
               <option value="admin">Administrador</option>
               <option value="user">Usuario</option>
               <option value="guest">Invitado</option>
-              {/* Agrega más roles si los tienes */}
             </select>
           </div>
 

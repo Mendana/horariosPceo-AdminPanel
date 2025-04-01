@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { SubjectFilters } from './SubjectFilters';
 import { SubjectItem } from './SubjectItem';
 import { Pagination } from './Pagination';
@@ -7,7 +7,7 @@ import { ModalEditor } from './ModalEditor';
 
 const ITEMS_PER_PAGE = 10;
 
-export function SubjectList() {
+export const SubjectList = forwardRef((props, ref) => {
   const [subjects, setSubjects] = useState([]);
   const [courseFilter, setCourseFilter] = useState('1');
   const [nameFilter, setNameFilter] = useState('');
@@ -39,34 +39,38 @@ export function SubjectList() {
     );
   };
 
+  const fetchSubjects = async () => {
+    try {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/year/${courseFilter}`);
+      const data = await res.json();
+
+      const parsedSubjects = data.subjects.map((item, index) => {
+        const fecha = `${item.year}-${String(item.mes).padStart(2, '0')}-${String(item.dia).padStart(2, '0')}`;
+
+        return {
+          id: index + 1,
+          nombre: item.subject_name,
+          aula: item.clase.trim(),
+          curso: `${item.subject_year}`,
+          fecha,
+          horaInicio: item.hora_inicio,
+          horaFinal: item.hora_final,
+        };
+      });
+
+      setSubjects(parsedSubjects);
+    } catch (err) {
+      console.error("Error al cargar horarios:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/year/${courseFilter}`);
-        const data = await res.json();
-
-        const parsedSubjects = data.subjects.map((item, index) => {
-          const fecha = `${item.year}-${String(item.mes).padStart(2, '0')}-${String(item.dia).padStart(2, '0')}`;
-
-          return {
-            id: index + 1,
-            nombre: item.subject_name,
-            aula: item.clase.trim(),
-            curso: `${item.subject_year}`,
-            fecha,
-            horaInicio: item.hora_inicio,
-            horaFinal: item.hora_final,
-          };
-        });
-
-        setSubjects(parsedSubjects);
-      } catch (err) {
-        console.error("Error al cargar horarios:", err);
-      }
-    };
-
     fetchSubjects();
   }, [courseFilter]);
+
+  useImperativeHandle(ref, () => ({
+    reload: fetchSubjects,
+  }));
 
   return (
     <section className="w-[90%] mt-10 px-8 py-5 border rounded-xl bg-white shadow-md">
@@ -108,4 +112,4 @@ export function SubjectList() {
       )}
     </section>
   );
-}
+});

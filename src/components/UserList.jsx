@@ -36,25 +36,32 @@ export function UserList() {
       prev.map(u => u.id === updatedUser.id ? updatedUser : u)
     );
   };
+  
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
           credentials: 'include',
         });
   
         if (!res.ok) {
           throw new Error('No se pudo obtener la lista de usuarios');
         }
-  
+        
         const data = await res.json();
-  
-        const parsedUsers = data.users.map(user => ({
+
+        console.log(data);
+
+        const parsedUsers = data.map(user => ({
           email: user.email,
-          role: user.role,
+          role: user.rol,
         }));
-  
+
         setUsers(parsedUsers);
       } catch (err) {
         console.error("Error al cargar usuarios:", err);
