@@ -44,9 +44,9 @@ export function ModalEditor({ subject, onClose, onSave }) {
 
     const dayParser = () => {
       const date_parts = edited.fecha.split('-');
-      const year = date_parts[2];
+      const year = date_parts[0];
       const month = date_parts[1];
-      const day = date_parts[0];
+      const day = date_parts[2];
       return { year, mes: month, dia: day };
     }
 
@@ -59,8 +59,6 @@ export function ModalEditor({ subject, onClose, onSave }) {
       hora_inicio: edited.horaInicio,
       hora_final: edited.horaFinal,
     });
-    console.log(editedSubject);
-    console.log(subject.id);
     try {
       const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/patchSubject/${subject.id}`, {
         method: 'PATCH',
