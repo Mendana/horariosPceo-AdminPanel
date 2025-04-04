@@ -45,7 +45,7 @@ export const SubjectList = forwardRef((props, ref) => {
       const data = await res.json();
 
       const parsedSubjects = data.subjects.map(item => {
-        const fecha = `${String(item.day.dia).padStart(2, '0')}-${String(item.day.mes).padStart(2, '0')}-${item.day.year}`;
+        const fecha = `${item.day.year}-${String(item.day.mes).padStart(2, '0')}-${String(item.day.dia).padStart(2, '0')}`;
 
         return {
           id: item.s_id,

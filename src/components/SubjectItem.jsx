@@ -1,10 +1,16 @@
 export function SubjectItem({ subject, onEdit, onDelete }) {
+  
+  const formatFecha = (isoDate) => {
+    const [yyyy, mm, dd] = isoDate.split('-');
+    return `${dd}-${mm}-${yyyy}`;
+  };
+
   return (
     <div className="flex justify-between items-center py-3">
       <div>
         <p className="font-medium">{subject.nombre}</p>
         <p className="text-sm text-gray-600">
-          {subject.fecha} a las {subject.horaInicio} – {subject.horaFinal}  |  Aula: {subject.aula}
+          {formatFecha(subject.fecha)} a las {subject.horaInicio} – {subject.horaFinal}
         </p>
       </div>
       <div className="flex flex-row gap-2 items-center">
