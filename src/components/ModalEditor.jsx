@@ -44,9 +44,9 @@ export function ModalEditor({ subject, onClose, onSave }) {
 
     const dayParser = () => {
       const date_parts = edited.fecha.split('-');
-      const year = date_parts[0];
+      const year = date_parts[2];
       const month = date_parts[1];
-      const day = date_parts[2];
+      const day = date_parts[0];
       return { year, mes: month, dia: day };
     }
 

@@ -68,6 +68,23 @@ export function UserList() {
     fetchUsers();
   }, []);
 
+  const handleDelete = async (email) => {
+    try {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/users/delete/${email}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'No se pudo eliminar la asignatura');
+      }
+
+      setUsers(prev => prev.filter(u => u.email !== email));
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <section className="w-[90%] mt-10 px-8 py-5 border rounded-xl bg-white shadow-md">
@@ -85,7 +102,12 @@ export function UserList() {
           <p className="text-gray-500 pt-4">No se encontraron usuarios con estos filtros o quizá no tiene permisos suficientes.</p>
         ) : (
           currentUsers.map(user => (
-            <UserItem key={user.email} user={user} onEdit={handleEdit} />
+            <UserItem
+              key={user.email}
+              user={user}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           ))
         )}
       </div>
