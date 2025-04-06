@@ -23,8 +23,12 @@ export function ModalEditor({ subject, onClose, onSave }) {
   );
   
   const normalizeFecha = (fechaStr) => {
-    if (!fechaStr || !fechaStr.includes('-')) return fechaStr;
+    if (!fechaStr) return '';
+    
+    // Ya en formato yyyy-mm-dd
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fechaStr)) return fechaStr;
   
+    // En formato dd-mm-yyyy o d-m-yyyy
     const [dd, mm, yyyy] = fechaStr.split('-');
     return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
   };
@@ -156,7 +160,6 @@ export function ModalEditor({ subject, onClose, onSave }) {
               </div>
             </div>
           </div>
-
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={onClose} className="cancel-button bg-gray-200">Cancelar</button>
             <button onClick={handleSave} className="submit-button bg-blue-500 text-white">Guardar</button>

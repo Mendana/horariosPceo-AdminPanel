@@ -57,7 +57,6 @@ export const SubjectList = forwardRef((props, ref) => {
           horaFinal: item.hora_final,
         };
       });
-
       setSubjects(parsedSubjects);
     } catch (err) {
       console.error("Error al cargar horarios:", err);

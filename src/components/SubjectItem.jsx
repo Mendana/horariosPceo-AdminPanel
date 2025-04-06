@@ -10,7 +10,7 @@ export function SubjectItem({ subject, onEdit, onDelete }) {
       <div>
         <p className="font-medium">{subject.nombre}</p>
         <p className="text-sm text-gray-600">
-          {formatFecha(subject.fecha)} a las {subject.horaInicio} – {subject.horaFinal}
+          {formatFecha(subject.fecha)} a las {subject.horaInicio} – {subject.horaFinal} | Aula: {subject.aula}
         </p>
       </div>
       <div className="flex flex-row gap-2 items-center">
