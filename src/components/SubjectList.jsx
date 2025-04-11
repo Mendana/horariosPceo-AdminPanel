@@ -8,18 +8,29 @@ import { ModalEditor } from './ModalEditor';
 const ITEMS_PER_PAGE = 10;
 
 export const SubjectList = forwardRef((props, ref) => {
+
+  const getUserUO = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) return '';
+    return user.email.split('@')[0].toLowerCase(); // UO o nombre de perfil
+  };
+
   const [subjects, setSubjects] = useState([]);
-  const [courseFilter, setCourseFilter] = useState('1');
+  const [uoFilter, setUoFilter] = useState(getUserUO()); // por defecto, el del usuario
+  const [yearFilter, setYearFilter] = useState('');
   const [nameFilter, setNameFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [editSubject, setEditSubject] = useState(null);
 
   const filteredSubjects = subjects.filter(s =>
-    (!courseFilter || s.curso.includes(courseFilter)) &&
     (!nameFilter || s.nombre.toLowerCase().includes(nameFilter.toLowerCase())) &&
-    (!dateFilter || s.fecha.includes(dateFilter))
+    (!dateFilter || s.fecha.includes(dateFilter)) &&
+    (!uoFilter || s.owner.toLowerCase().includes(uoFilter.toLowerCase())) &&
+    (!/^uo\d{4,6}$/.test(uoFilter) || true) && // si es UO, ignora el año
+    (!/^curso/i.test(uoFilter) && (!yearFilter || s.curso === yearFilter)) // si es cursoXX, filtra por año
   );
+
 
   const totalPages = Math.ceil(filteredSubjects.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -41,7 +52,7 @@ export const SubjectList = forwardRef((props, ref) => {
 
   const fetchSubjects = async () => {
     try {
-      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/year/${courseFilter}`);
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/year/${yearFilter}`);
       const data = await res.json();
 
       const parsedSubjects = data.subjects.map(item => {
@@ -55,8 +66,10 @@ export const SubjectList = forwardRef((props, ref) => {
           fecha,
           horaInicio: item.hora_inicio,
           horaFinal: item.hora_final,
+          approved: item.approved ?? true, // ✅ por defecto aprobado si no viene
         };
       });
+
       setSubjects(parsedSubjects);
     } catch (err) {
       console.error("Error al cargar horarios:", err);
@@ -84,7 +97,7 @@ export const SubjectList = forwardRef((props, ref) => {
 
   useEffect(() => {
     fetchSubjects();
-  }, [courseFilter]);
+  }, [yearFilter]);
 
   useImperativeHandle(ref, () => ({
     reload: fetchSubjects,
@@ -99,8 +112,11 @@ export const SubjectList = forwardRef((props, ref) => {
         setNameFilter={(v) => { setNameFilter(v); setCurrentPage(1); }}
         dateFilter={dateFilter}
         setDateFilter={(v) => { setDateFilter(v); setCurrentPage(1); }}
-        courseFilter={courseFilter}
-        setCourseFilter={(v) => { setCourseFilter(v); setCurrentPage(1); }}
+        uoFilter={uoFilter}
+        setUoFilter={(v) => { setUoFilter(v); setCurrentPage(1); }}
+        yearFilter={yearFilter}
+        setYearFilter={(v) => { setYearFilter(v); setCurrentPage(1); }}
+        userEmail={getUserUO()}
       />
 
       <div className="border-t divide-y">

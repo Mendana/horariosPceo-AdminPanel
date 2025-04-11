@@ -12,6 +12,9 @@ import { Help } from './pages/Help.jsx';
 import { AuthProvider } from './AuthContext';
 import PrivateRoute from './PrivateRoute';
 import { MyAccount } from './pages/MyAccount.jsx';
+import { MySubjects } from './pages/MySubjects.jsx';
+import { PendingApprovals } from './pages/PendingApprovals.jsx';
+
 
 function App() {
   return (
@@ -34,6 +37,8 @@ function App() {
           >
             <Route path="schedule" element={<Schedule />} />
             <Route path="users" element={<Users />} />
+            <Route path="mySubjects" element={<MySubjects />} />
+            <Route path="pendingApprovals" element={<PendingApprovals />} />
             <Route path="help" element={<Help />} />
             <Route path="aboutUs" element={<AboutUs />} />
             <Route path="myAccount" element={<MyAccount />} />
