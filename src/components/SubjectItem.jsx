@@ -8,7 +8,7 @@ export function SubjectItem({ subject, onEdit, onDelete }) {
   return (
     <div className="flex justify-between items-center py-3">
       <div>
-        <p className={`font-medium ${subject.approved ? '' : 'text-yellow-600'}`}>
+        <p className={`font-medium ${subject.approved===1 ? '' : 'text-yellow-600'}`}>
           {subject.nombre}
           {!subject.approved && <span className="ml-2 text-xs italic">(Pendiente de aprobación)</span>}
         </p>

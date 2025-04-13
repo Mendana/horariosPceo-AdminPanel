@@ -1,18 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/createSubject.css';
-import { FormItem } from './FormItem.jsx';
 import { TimePicker } from './TimePicker.jsx';
 import { DurationPicker } from './DurationPicker.jsx';
-import { CoursePicker } from './CoursePicker.jsx';
+
+const asignaturasMatematicas = [
+  "AF", "AI", "AII", "ALG", "AMatI", "AMatII", "AMatIII", "ANM",
+  "CDI", "EDI", "EDII", "EstyProb", "GCS", "IAMat", "IE", "MDFEDP",
+  "MNumer", "MOR", "ProgM", "PyE", "RNEDO", "TopI", "TopII", "VC"
+];
+
 
 export function CreateSubject({ onCreated }) {
-  const [nombre, setNombre] = useState('');
+  const [subjectsData, setSubjectsData] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedTipo, setSelectedTipo] = useState('');
   const [aula, setAula] = useState('');
-  const [curso, setCurso] = useState('1');
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);
   const [horaInicio, setHoraInicio] = useState('09:00');
   const [duracion, setDuracion] = useState('01:00');
   const [error, setError] = useState('');
+
+
+  const getSubjectLabel = (subject) =>
+    asignaturasMatematicas.includes(subject)
+      ? `${subject} - Matemáticas`
+      : `${subject} - Informática`;
+  
 
   const calcularHoraFinal = () => {
     const [h, m] = horaInicio.split(':').map(Number);
@@ -23,29 +36,60 @@ export function CreateSubject({ onCreated }) {
     return `${finalHour}:${finalMin}`;
   };
 
+  const dayParser = () => {
+    const [year, month, day] = fecha.split('-');
+    return { year, mes: month, dia: day };
+  };
+
+  useEffect(() => {
+    const fetchTipos = async () => {
+      try {
+        const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/schedule/tipos', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          credentials: 'include',
+        });
+        const data = await res.json();
+        setSubjectsData(data.tipos || []);
+      } catch (err) {
+        console.error("Error al cargar asignaturas:", err);
+      }
+    };
+
+    fetchTipos();
+  }, []);
+
+  // Extraer valores únicos para los selects
+  const uniqueSubjects = [...new Set(subjectsData.map(s => s.subject))].sort();
+  const tiposForSubject = subjectsData
+    .filter(s => s.subject === selectedSubject)
+    .map(s => s.tipo)
+    .sort();
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-  
-    const horaFinal = calcularHoraFinal();
-    const dayParser = () => {
-      const date_parts = fecha.split('-');
-      const year = date_parts[0];
-      const month = date_parts[1];
-      const day = date_parts[2];
-      return {year, mes: month, dia: day};
+
+    if (!selectedSubject || !selectedTipo) {
+      setError('Debes seleccionar asignatura y tipo.');
+      return;
     }
 
-    const day_parsed = dayParser();
+    const horaFinal = calcularHoraFinal();
+    const { year, mes, dia } = dayParser();
 
-    const subject = JSON.stringify({
-        subject_name: nombre,
-        clase: aula,
-        subject_year: curso,
-        day: day_parsed,
-        hora_inicio: horaInicio,
-        hora_final: horaFinal,
-      });
+    const subjectData = {
+      clase_subjectNombre: selectedSubject,
+      clase_tipo: selectedTipo,
+      clase_aula: aula,
+      clase_year: year,
+      clase_mes: mes,
+      clase_dia: dia,
+      clase_hora_inicio: horaInicio,
+      clase_hora_final: horaFinal,
+      clase_aproved: true,
+    };
 
     try {
       const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/schedule/createSubject', {
@@ -53,33 +97,30 @@ export function CreateSubject({ onCreated }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // ← Necesario si usas JWT en cookie HttpOnly
-        body: subject,
+        credentials: 'include',
+        body: JSON.stringify(subjectData),
       });
-      
 
       let data = {};
       try {
         data = await res.json();
-      } catch {
-      }
-      
-      console.log(data);
+      } catch { }
 
       if (!res.ok) {
         throw new Error(data.message || 'No se pudo crear la asignatura');
       }
-  
-      // Limpieza del formulario tras éxito
-      setNombre('');
+
+      // Limpiar
+      setSelectedSubject('');
+      setSelectedTipo('');
       setAula('');
       setCurso('1');
       setFecha(new Date().toISOString().split('T')[0]);
       setHoraInicio('09:00');
       setDuracion('01:00');
-  
-      if (onCreated) onCreated(); // Refresca la lista si se pasó como prop
-  
+
+      if (onCreated) onCreated();
+
     } catch (err) {
       setError(err.message);
     }
@@ -90,41 +131,73 @@ export function CreateSubject({ onCreated }) {
       <h1 className='text-2xl font-semibold'>Añadir clases/exámenes</h1>
       {error && <p className="text-red-500">{error}</p>}
       <form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
-        <FormItem
-          label='Nombre/código de la asignatura/examen:'
-          placeholder='PyE-CE1 / BD.T.1 / Examen teórico BD'
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-        />
-        <FormItem
-          label='Clase/Aula:'
-          placeholder='S01 / A-2-01 / Aula B'
-          value={aula}
-          onChange={(e) => setAula(e.target.value)}
-        />
-        <section className='flex flex-row gap-10 items-center pt-4'>
-          <div className='flex flex-row gap-3 items-center pt-2'>
-            <label className="text-sm font-medium">Curso: </label>
-            <CoursePicker value={curso} onChange={(value) => setCurso(value)} />
+        <div className='flex flex-col md:flex-row gap-4'>
+          <div className='flex flex-col flex-1'>
+            <label className="text-sm font-medium mb-3">Asignatura:</label>
+            <select
+              className="input name-filter w-[75%]"
+              value={selectedSubject}
+              onChange={(e) => {
+                setSelectedSubject(e.target.value);
+                setSelectedTipo(''); // reset tipo al cambiar subject
+              }}
+            >
+              <option value="">Selecciona asignatura</option>
+              {uniqueSubjects.map((s) => (
+                <option key={s} value={s}>{getSubjectLabel(s)}</option>
+              ))}
+            </select>
           </div>
-          <div className='flex flex-row gap-3 items-center pt-2'>
-            <label className="text-sm font-medium">Fecha: </label>
+
+          <div className='flex flex-col flex-1'>
+            <label className="text-sm font-medium mb-3">Tipo:</label>
+            <select
+              className="input name-filter w-[75%]"
+              value={selectedTipo}
+              onChange={(e) => setSelectedTipo(e.target.value)}
+              disabled={!selectedSubject}
+            >
+              <option value="">Selecciona tipo</option>
+              {["Examen", "Otros", ...tiposForSubject].map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className='flex flex-col flex-1'>
+            <label className="text-sm font-medium mb-3">Aula:</label>
+            <input
+              type="text"
+              className="input name-filter w-[75%]"
+              placeholder="Ej: A-2-01"
+              value={aula}
+              onChange={(e) => setAula(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className='flex flex-col md:flex-row gap-4 pt-4'>
+          <div className='flex flex-col flex-1'>
+            <label className="text-sm font-medium mb-3">Fecha:</label>
             <input
               type="date"
-              className="input date-filter"
+              className="input name-filter w-[75%]"
               value={fecha}
               onChange={(e) => setFecha(e.target.value)}
             />
           </div>
-          <div className='flex flex-row gap-3 items-center pt-2'>
-            <label className="text-sm font-medium">Hora Inicio: </label>
+
+          <div className='flex flex-col flex-1'>
+            <label className="text-sm font-medium mb-3">Hora de inicio:</label>
             <TimePicker value={horaInicio} onChange={setHoraInicio} />
           </div>
-          <div className='flex flex-row gap-3 items-center pt-2'>
-            <label className="text-sm font-medium">Duración: </label>
+
+          <div className='flex flex-col flex-1'>
+            <label className="text-sm font-medium mb-3">Duración:</label>
             <DurationPicker value={duracion} onChange={setDuracion} />
           </div>
-        </section>
+        </div>
+
         <section className='flex flex-row justify-end items-center pt-5'>
           <button type="submit" className='submit-button'>Añadir</button>
         </section>

@@ -27,11 +27,12 @@ export const SignIn = () => {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ email: username, password: password })
+                body: JSON.stringify({ email: username.split('@')[0], password: password })
             });
             if (response.ok) {
                 // No necesitas guardar el token manualmente ya que viene como cookie
                 navigate('/schedule');
+                console.log(response);
             } else {
                 const data = await response.json();
                 setError(data.message || 'Error al registrarse');

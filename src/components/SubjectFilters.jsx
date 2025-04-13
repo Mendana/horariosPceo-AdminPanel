@@ -9,7 +9,7 @@ export function SubjectFilters({
   setUoFilter,
   yearFilter,
   setYearFilter,
-  userEmail, // pasa esto desde el componente padre
+  userEmail,
 }) {
   const isEstudiante = /^uo\d{4,6}@uniovi\.es$/.test(userEmail);
 
@@ -33,7 +33,12 @@ export function SubjectFilters({
         placeholder="UO o nombre de perfil"
         className="input name-filter"
         value={uoFilter}
-        onChange={(e) => setUoFilter(e.target.value)}
+        onChange={(e) => {
+          if (yearFilter) {
+            setYearFilter(''); // ⬅️ Desactiva el filtro por curso automáticamente
+          }
+          setUoFilter(e.target.value);
+        }}
       />
       {!isEstudiante && (
         <select
@@ -42,10 +47,10 @@ export function SubjectFilters({
           onChange={(e) => setYearFilter(e.target.value)}
         >
           <option value="">Todos los cursos</option>
-          <option value="1">Primero</option>
-          <option value="2">Segundo</option>
-          <option value="3">Tercero</option>
-          <option value="4">Cuarto</option>
+          <option value="Primero">Primero</option>
+          <option value="Segundo">Segundo</option>
+          <option value="Tercero">Tercero</option>
+          <option value="Cuarto">Cuarto</option>
         </select>
       )}
       <button
@@ -53,7 +58,7 @@ export function SubjectFilters({
         onClick={() => {
           setNameFilter('');
           setDateFilter('');
-          setUoFilter(userEmail); // reinicia al actual
+          setUoFilter(userEmail); // reinicia UO
           setYearFilter('');
         }}
       >

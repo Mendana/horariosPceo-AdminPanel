@@ -4,7 +4,6 @@ import { SubjectItem } from './SubjectItem';
 import { Pagination } from './Pagination';
 import { ModalEditor } from './ModalEditor';
 
-
 const ITEMS_PER_PAGE = 10;
 
 export const SubjectList = forwardRef((props, ref) => {
@@ -16,21 +15,68 @@ export const SubjectList = forwardRef((props, ref) => {
   };
 
   const [subjects, setSubjects] = useState([]);
-  const [uoFilter, setUoFilter] = useState(getUserUO()); // por defecto, el del usuario
+  const [uoFilter, setUoFilter] = useState(getUserUO());
   const [yearFilter, setYearFilter] = useState('');
   const [nameFilter, setNameFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [editSubject, setEditSubject] = useState(null);
+  const [debouncedUO, setDebouncedUO] = useState(uoFilter);
+
+  const capitalize = (str) =>
+    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+  const fetchSubjects = async () => {
+    try {
+      const uoFinal = yearFilter
+        ? `curso${capitalize(yearFilter)}`
+        : debouncedUO;
+  
+      const baseUrl = `https://horariospceo.ingenieriainformatica.uniovi.es/schedule/userSchedule/${encodeURIComponent(uoFinal)}`;
+  
+      const res = await fetch(baseUrl, {
+        method: 'GET',
+        credentials: 'include',
+      });
+  
+      if (!res.ok) {
+        setSubjects([]); // ❌ Limpia si error HTTP
+        throw new Error("No se pudieron cargar las asignaturas");
+      }
+  
+      const data = await res.json();
+  
+      if (!data || data.length === 0) {
+        setSubjects([]); // ❌ Limpia si no hay asignaturas
+        return;
+      }
+  
+      const parsedSubjects = data.map(item => {
+        const fecha = `${item.clase_year}-${String(item.clase_mes).padStart(2, '0')}-${String(item.clase_dia).padStart(2, '0')}`;
+  
+        return {
+          id: item.clase_id,
+          nombre: `${item.clase_subjectNombre} - ${item.clase_tipo}`,
+          aula: item.clase_aula.trim(),
+          fecha,
+          horaInicio: item.clase_hora_inicio,
+          horaFinal: item.clase_hora_final,
+          approved: item.clase_aproved ?? 1,
+        };
+      });
+  
+      setSubjects(parsedSubjects);
+    } catch (err) {
+      //console.error("Error al cargar horarios:", err);
+      setSubjects([]); // ❌ Limpia también en errores de red/parsing
+    }
+  };
+  
 
   const filteredSubjects = subjects.filter(s =>
     (!nameFilter || s.nombre.toLowerCase().includes(nameFilter.toLowerCase())) &&
-    (!dateFilter || s.fecha.includes(dateFilter)) &&
-    (!uoFilter || s.owner.toLowerCase().includes(uoFilter.toLowerCase())) &&
-    (!/^uo\d{4,6}$/.test(uoFilter) || true) && // si es UO, ignora el año
-    (!/^curso/i.test(uoFilter) && (!yearFilter || s.curso === yearFilter)) // si es cursoXX, filtra por año
+    (!dateFilter || s.fecha.includes(dateFilter))
   );
-
 
   const totalPages = Math.ceil(filteredSubjects.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -50,32 +96,6 @@ export const SubjectList = forwardRef((props, ref) => {
     );
   };
 
-  const fetchSubjects = async () => {
-    try {
-      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/year/${yearFilter}`);
-      const data = await res.json();
-
-      const parsedSubjects = data.subjects.map(item => {
-        const fecha = `${item.day.year}-${String(item.day.mes).padStart(2, '0')}-${String(item.day.dia).padStart(2, '0')}`;
-
-        return {
-          id: item.s_id,
-          nombre: item.subject_name,
-          aula: item.clase.trim(),
-          curso: `${item.subject_year}`,
-          fecha,
-          horaInicio: item.hora_inicio,
-          horaFinal: item.hora_final,
-          approved: item.approved ?? true, // ✅ por defecto aprobado si no viene
-        };
-      });
-
-      setSubjects(parsedSubjects);
-    } catch (err) {
-      console.error("Error al cargar horarios:", err);
-    }
-  };
-
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/delete/${id}`, {
@@ -88,8 +108,7 @@ export const SubjectList = forwardRef((props, ref) => {
         throw new Error(data.message || 'No se pudo eliminar la asignatura');
       }
 
-      // Elimina del estado local
-      setSubjects(prev => prev.filter(s => s.id !== id));
+      await fetchSubjects(); // Refresca la lista después de eliminar
     } catch (err) {
       alert(err.message);
     }
@@ -97,11 +116,19 @@ export const SubjectList = forwardRef((props, ref) => {
 
   useEffect(() => {
     fetchSubjects();
-  }, [yearFilter]);
+  }, [debouncedUO, yearFilter]);
 
   useImperativeHandle(ref, () => ({
     reload: fetchSubjects,
   }));
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setDebouncedUO(uoFilter);
+    }, 500); // Espera 500ms después de la última tecla
+  
+    return () => clearTimeout(delay); // Limpia el timeout anterior si se vuelve a escribir
+  }, [uoFilter]);
 
   return (
     <section className="w-[90%] mt-10 px-8 py-5 border rounded-xl bg-white shadow-md">
@@ -115,7 +142,18 @@ export const SubjectList = forwardRef((props, ref) => {
         uoFilter={uoFilter}
         setUoFilter={(v) => { setUoFilter(v); setCurrentPage(1); }}
         yearFilter={yearFilter}
-        setYearFilter={(v) => { setYearFilter(v); setCurrentPage(1); }}
+        setYearFilter={(v) => {
+          const curso = v
+            ? `curso${v.charAt(0).toUpperCase()}${v.slice(1).toLowerCase()}`
+            : getUserUO();
+        
+          setYearFilter(v);
+          setUoFilter(curso);
+          setCurrentPage(1);
+        
+          // 🚀 Forzar fetch justo después
+          setTimeout(fetchSubjects, 0);
+        }}
         userEmail={getUserUO()}
       />
 
@@ -124,10 +162,12 @@ export const SubjectList = forwardRef((props, ref) => {
           <p className="text-gray-500 pt-4">No se encontraron clases para estos filtros. Pruebe con otros.</p>
         ) : (
           currentSubjects.map(subject => (
-            <SubjectItem key={subject.id}
+            <SubjectItem
+              key={subject.id}
               subject={subject}
               onEdit={handleEdit}
-              onDelete={handleDelete} />
+              onDelete={handleDelete}
+            />
           ))
         )}
       </div>

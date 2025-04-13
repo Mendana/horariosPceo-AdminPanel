@@ -39,8 +39,8 @@ export const SubjectGroupSelectorList = forwardRef(({ fetchData }, ref) => {
   }, []);
 
   const groupedSubjects = rawSubjects.reduce((acc, curr) => {
-    if (!acc[curr.tipo]) acc[curr.tipo] = [];
-    acc[curr.tipo].push(curr.subject);
+    if (!acc[curr.subject]) acc[curr.subject] = [];
+    acc[curr.subject].push(curr.tipo);
     return acc;
   }, {});
 
@@ -60,10 +60,33 @@ export const SubjectGroupSelectorList = forwardRef(({ fetchData }, ref) => {
         </div>
         <button
           className="btn clear-filters"
-          onClick={() => {
+          onClick={async () => {
             const selected = selectedSubjects;
-            console.log("Seleccionados:", selected);
-            alert(`Grupos seleccionados:\n${selected.join('\n')}`);
+
+            const body = selected.map(key => {
+              const [subject, tipo] = key.split("-");
+              return { subject, tipo };
+            });
+
+            console.log("Guardando seleccionados:", body);
+
+            try {
+              const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/schedule/horario', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ cogido: body }),
+              });
+
+              if (!res.ok) throw new Error("Error al guardar");
+              alert("Grupos guardados con éxito ✅");
+            } catch (err) {
+              console.error("Error guardando asignaturas:", err);
+              alert("❌ Error al guardar tus grupos.");
+            }
           }}
         >
           Guardar seleccionadas
@@ -72,19 +95,17 @@ export const SubjectGroupSelectorList = forwardRef(({ fetchData }, ref) => {
 
       <div className="divide-y">
         {Object.entries(groupedSubjects)
-          .filter(([tipo, subjects]) =>
-            tipo.toLowerCase().includes(searchFilter.toLowerCase()) ||
-            subjects.some(subject =>
-              subject.toLowerCase().includes(searchFilter.toLowerCase())
-            )
+          .filter(([subject, tipos]) =>
+            subject.toLowerCase().includes(searchFilter.toLowerCase()) ||
+            tipos.some(tipo => tipo.toLowerCase().includes(searchFilter.toLowerCase()))
           )
-          .map(([tipo, subjects]) => (
+          .map(([subject, tipos]) => (
             <SubjectGroupRow
-              key={tipo}
-              tipo={tipo}
-              subjects={subjects}
-              isExpanded={expandedTipos.includes(tipo)}
-              onToggleExpand={() => toggleTipo(tipo)}
+              key={subject}
+              subject={subject}
+              tipos={tipos}
+              isExpanded={expandedTipos.includes(subject)}
+              onToggleExpand={() => toggleTipo(subject)}
               selectedSubjects={selectedSubjects}
               onToggleSubject={toggleSelected}
               searchFilter={searchFilter}
