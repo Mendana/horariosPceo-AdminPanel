@@ -5,7 +5,7 @@ import "../styles/login.css";
 
 export const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -14,33 +14,45 @@ export const SignIn = () => {
         e.preventDefault();
         setError('');
 
-        if (!username || !password) {
+        if (!email || !password) {
             setError('Por favor, rellena todos los campos');
             return;
         }
 
+        // Validación opcional del dominio universitario
+        if (!email.endsWith('@uniovi.es')) {
+            setError('Debes usar un correo universitario (@uniovi.es)');
+            return;
+        }
+
+        const trimmedEmail = email.split('@')[0];
         try {
             const response = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users/create/', {
                 method: 'POST',
-                credentials: 'include', // Importante para manejar cookies
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ email: username.split('@')[0], password: password })
+                body: JSON.stringify({ email: trimmedEmail, password })
             });
+
+            const data = await response.json();
+
             if (response.ok) {
-                // No necesitas guardar el token manualmente ya que viene como cookie
-                navigate('/schedule');
-                console.log(response);
+                if (data.requiresVerification) {
+                    alert('Revisa tu correo universitario para verificar tu cuenta antes de iniciar sesión.');
+                    navigate('/login');
+                } else {
+                    navigate('/schedule');
+                }
             } else {
-                const data = await response.json();
                 setError(data.message || 'Error al registrarse');
             }
         } catch (error) {
-            setError('Error de conexión');
+            setError('Error de conexión con el servidor');
         }
-    }
+    };
 
     return (
         <main className="flex flex-row justify-center items-center h-screen bg-gray-100">
@@ -50,11 +62,11 @@ export const SignIn = () => {
                     {error && <p className="text-red-500">{error}</p>}
                     <form className="flex flex-col gap-5 w-80" onSubmit={handleSubmit}>
                         <input
-                            type="text"
+                            type="email"
                             placeholder="Correo Universitario"
                             className="input-field"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <div className="relative input-wrapper">
                             <input
@@ -73,12 +85,14 @@ export const SignIn = () => {
                             </button>
                         </div>
                         <button type="submit" className="submit-button">
-                            Crear cuenta
+                            Crear cuenta y verificar
                         </button>
                     </form>
-                    <Link to="/" className="lost-pwd">
+                    <a
+                        href="mailto:dashboardpceo@gmail.com?subject=Solicitud%20de%20rol%20administrador&body=Hola%2C%20me%20gustar%C3%ADa%20solicitar%20el%20rol%20de%20administrador%20en%20la%20plataforma%20de%20horarios.%20Mi%20correo%20institucional%20es%3A%20[pon%20tu%20correo%20aqui]"
+                        className='lost-pwd'>
                         <p className="text-gray-600">¿Solicitar rol administrador?</p>
-                    </Link>
+                    </a>
                     <Link to="/" className="lost-pwd">
                         <p className="text-gray-600">Iniciar sesión</p>
                     </Link>

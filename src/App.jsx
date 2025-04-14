@@ -15,6 +15,7 @@ import { MyAccount } from './pages/MyAccount.jsx';
 import { MySubjects } from './pages/MySubjects.jsx';
 import { PendingApprovals } from './pages/PendingApprovals.jsx';
 import { Toaster } from 'react-hot-toast';
+import { VerifyEmail } from './pages/VerifyEmail.jsx';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/recover" element={<RecoverPwd />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path='/verify' element={<VerifyEmail />} />
 
           {/* Rutas protegidas */}
           <Route

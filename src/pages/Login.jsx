@@ -89,9 +89,11 @@ export const Login = () => {
                             Iniciar Sesión
                         </button>
                     </form>
-                    <Link to="/recover" className="lost-pwd">
-                        <p className="text-gray-600">¿Olvidaste tu contraseña?</p>
-                    </Link>
+                    <a
+                        href="mailto:dashboardpceo@gmail.com?subject=Solicitud%20de%20rol%20administrador&body=Hola%2C%20me%20gustar%C3%ADa%20solicitar%20el%20rol%20de%20administrador%20en%20la%20plataforma%20de%20horarios.%20Mi%20correo%20institucional%20es%3A%20[pon%20tu%20correo%20aqui]"
+                        className='lost-pwd'>
+                        <p className="text-gray-600">¿Solicitar rol administrador?</p>
+                    </a>
                     <Link to="/signin" className="lost-pwd">
                         <p className="text-gray-600">Crear cuenta</p>
                     </Link>
