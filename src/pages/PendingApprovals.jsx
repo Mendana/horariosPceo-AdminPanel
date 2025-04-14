@@ -57,6 +57,7 @@ export const PendingApprovals = () => {
       await fetchPending();
     } catch (err) {
       toast.error("Error al aprobar la modificación de la asignatura");
+      await fetchPending();
     }
   };
 
@@ -72,6 +73,7 @@ export const PendingApprovals = () => {
       await fetchPending();
     } catch (err) {
       toast.error("Error al rechazar la modificación de la asignatura");
+      await fetchPending();
     }
   };
 

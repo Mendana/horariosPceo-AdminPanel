@@ -108,8 +108,9 @@ export const SubjectList = forwardRef((props, ref) => {
       }
 
       await fetchSubjects(); // Refresca la lista después de eliminar
+      toast.success('Pendiente de confirmación');
     } catch (err) {
-      alert(err.message);
+      toast.error('Error al eliminar la asignatura');
     }
   };
 
