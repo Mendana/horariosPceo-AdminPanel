@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
+import { toast } from 'react-hot-toast';
 
 import "../styles/login.css";
 
@@ -42,12 +43,15 @@ export const Login = () => {
                 const userData = { email: username }; // o data.user si lo tienes
                 localStorage.setItem('user', JSON.stringify(userData));
                 login(userData);
-                navigate('/schedule');
+                toast.success('Inicio de sesión exitoso');
+                navigate('/schedule')
             } else {
                 setError(data.message || 'Error al iniciar sesión.');
+                toast.error(data.message || 'Error al iniciar sesión.');
             }
         } catch (error) {
             setError('Error de conexión');
+            toast.error('Error de conexión');
         }
     }
 

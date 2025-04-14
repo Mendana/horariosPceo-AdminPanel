@@ -2,8 +2,7 @@ import { useRef } from "react";
 import { HeaderNav } from "../components/HeaderNav.jsx";
 import "../styles/aboutUs.css";
 import { SubjectGroupSelectorList } from "../components/SubjectGroupSelectorList.jsx";
-
-const selectedArray = ["AL-T.2", "FI-L.3"]; // <- Asegúrate de usar el formato correcto: subject-tipo
+import { toast } from "react-hot-toast";
 
 export function MySubjects() {
   const selectorRef = useRef();
@@ -48,7 +47,7 @@ export function MySubjects() {
                   selected: (data.cogido ?? []).map(item => `${item.subject}-${item.tipo}`),
                 };
               } catch (err) {
-                console.error("Error al cargar datos:", err);
+                toast.error("Error al cargar los tipos de asignaturas");
                 return { data: [], selected: [] };
               }
             }}

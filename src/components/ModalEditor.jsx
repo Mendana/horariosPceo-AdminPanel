@@ -3,6 +3,7 @@ import '../styles/subjectModal.css';
 import { X } from 'lucide-react';
 import { TimePicker } from './TimePicker';
 import { DurationPicker } from './DurationPicker';
+import { toast } from 'react-hot-toast';
 
 export function ModalEditor({ subject, onClose, onSave }) {
   const [error, setError] = useState('');
@@ -45,21 +46,19 @@ export function ModalEditor({ subject, onClose, onSave }) {
 
   const handleSave = async () => {
     setError('');
-
+  
     const dayParser = () => {
-      const date_parts = edited.fecha.split('-');
-      const year = date_parts[0];
-      const month = date_parts[1];
-      const day = date_parts[2];
+      const [year, month, day] = edited.fecha.split('-');
       return { year, mes: month, dia: day };
-    }
-
+    };
+  
     const day_parsed = dayParser();
-
+  
     const editedSubject = JSON.stringify({
-      subject_name: edited.nombre,
-      clase: edited.aula,
-      day: day_parsed,
+      aula: edited.aula,
+      year: day_parsed.year,
+      mes: day_parsed.mes,
+      dia: day_parsed.dia,
       hora_inicio: edited.horaInicio,
       hora_final: edited.horaFinal,
     });
@@ -73,27 +72,36 @@ export function ModalEditor({ subject, onClose, onSave }) {
         body: editedSubject,
       });
 
-      let data = {};
-      try {
-        data = await res.json();
-      } catch {
-        // Puede que no haya JSON, no pasa nada
-      }
-
-      console.log(data);
+      const data = await res.json().catch(() => ({}));
+  
       if (!res.ok) {
         throw new Error(data.message || 'No se pudo actualizar la asignatura');
       }
-
-      onSave({ ...edited, id: subject.id }); // Propaga cambios
+  
+      toast.success('Asignatura actualizada correctamente');
+      onSave(); // solo necesitamos que SubjectList haga un fetch
       onClose();
+  
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     }
   };
+ 
 
   const handleTimeChange = (value) => {
-    setEdited(prev => ({ ...prev, horaInicio: value }));
+    const [h, m] = value.split(':').map(Number);
+    const [dh, dm] = duracion.split(':').map(Number);
+  
+    const totalMinutes = h * 60 + m + dh * 60 + dm;
+    const finalHour = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
+    const finalMinutes = String(totalMinutes % 60).padStart(2, '0');
+  
+    setEdited(prev => ({
+      ...prev,
+      horaInicio: value,
+      horaFinal: `${finalHour}:${finalMinutes}`
+    }));
   };
 
   const handleDurationChange = (duration) => {
@@ -134,6 +142,7 @@ export function ModalEditor({ subject, onClose, onSave }) {
               onChange={handleChange}
               className="input-field"
               placeholder="Nombre"
+              disabled
             />
             <input
               name="aula"

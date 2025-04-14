@@ -3,7 +3,7 @@ import { UserFilters } from './UserFilters';
 import { UserItem } from './UserItem';
 import { Pagination } from './Pagination';
 import { UserModalEditor } from './UserModalEditor';
-
+import { toast } from 'react-hot-toast';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -61,7 +61,7 @@ export function UserList() {
 
         setUsers(parsedUsers);
       } catch (err) {
-        console.error("Error al cargar usuarios:", err);
+        toast.error('Error al cargar los usuarios.');
       }
     };
   
@@ -81,8 +81,9 @@ export function UserList() {
       }
 
       setUsers(prev => prev.filter(u => u.email !== email));
+      toast.success('Usuario eliminado correctamente.');
     } catch (err) {
-      alert(err.message);
+      toast.error('Error al eliminar el usuario.');
     }
   };
 

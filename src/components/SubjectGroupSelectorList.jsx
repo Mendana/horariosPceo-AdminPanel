@@ -1,5 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { SubjectGroupRow } from './groupSelection/SubjectGroupRow.jsx';
+import toast from 'react-hot-toast';
 
 export const SubjectGroupSelectorList = forwardRef(({ fetchData }, ref) => {
   const [rawSubjects, setRawSubjects] = useState([]);
@@ -82,10 +83,9 @@ export const SubjectGroupSelectorList = forwardRef(({ fetchData }, ref) => {
               });
 
               if (!res.ok) throw new Error("Error al guardar");
-              alert("Grupos guardados con éxito ✅");
+              toast.success("Grupos guardados con éxito");
             } catch (err) {
-              console.error("Error guardando asignaturas:", err);
-              alert("❌ Error al guardar tus grupos.");
+              toast.error("Error al guardar grupos");
             }
           }}
         >

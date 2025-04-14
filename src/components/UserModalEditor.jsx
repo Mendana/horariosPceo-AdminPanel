@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../styles/subjectModal.css';
 import { X } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export function UserModalEditor({ user, onClose, onSave }) {
   const [editedRole, setEditedRole] = useState(user.role);
@@ -41,7 +42,9 @@ export function UserModalEditor({ user, onClose, onSave }) {
 
       onSave({ ...user, role: editedRole });
       onClose();
+      toast.success('Rol actualizado correctamente.');
     } catch (err) {
+      toast.error('Error al actualizar el rol.');
       setError(err.message);
     }
   };

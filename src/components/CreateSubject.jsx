@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import '../styles/createSubject.css';
 import { TimePicker } from './TimePicker.jsx';
 import { DurationPicker } from './DurationPicker.jsx';
+import toast from 'react-hot-toast';
 
 const asignaturasMatematicas = [
   "AF", "AI", "AII", "ALG", "AMatI", "AMatII", "AMatIII", "ANM",
@@ -52,7 +53,7 @@ export function CreateSubject({ onCreated }) {
         const data = await res.json();
         setSubjectsData(data.tipos || []);
       } catch (err) {
-        console.error("Error al cargar asignaturas:", err);
+        toast.error("Error al cargar los tipos de asignaturas");
       }
     };
 
@@ -80,17 +81,16 @@ export function CreateSubject({ onCreated }) {
     const { year, mes, dia } = dayParser();
 
     const subjectData = {
-      clase_subjectNombre: selectedSubject,
-      clase_tipo: selectedTipo,
-      clase_aula: aula,
-      clase_year: year,
-      clase_mes: mes,
-      clase_dia: dia,
-      clase_hora_inicio: horaInicio,
-      clase_hora_final: horaFinal,
-      clase_aproved: true,
+      subjectNombre: selectedSubject,
+      tipo: selectedTipo,
+      aula: aula,
+      year: year,
+      mes: mes,
+      dia: dia,
+      hora_inicio: horaInicio,
+      hora_final: horaFinal,
+      aproved: false,
     };
-
     try {
       const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/schedule/createSubject', {
         method: 'POST',
@@ -114,14 +114,14 @@ export function CreateSubject({ onCreated }) {
       setSelectedSubject('');
       setSelectedTipo('');
       setAula('');
-      setCurso('1');
       setFecha(new Date().toISOString().split('T')[0]);
       setHoraInicio('09:00');
       setDuracion('01:00');
 
       if (onCreated) onCreated();
-
+      toast.success("Asignatura creada correctamente");
     } catch (err) {
+      toast.error("Error al crear la asignatura");
       setError(err.message);
     }
   };

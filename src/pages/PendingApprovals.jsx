@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { HeaderNav } from "../components/HeaderNav.jsx";
+import { toast } from "react-hot-toast";
 
 export const PendingApprovals = () => {
   const [pendingSubjects, setPendingSubjects] = useState([]);
@@ -15,52 +16,62 @@ export const PendingApprovals = () => {
       const data = await res.json();
 
       const parsed = data.map(item => {
-        const fecha = `${item.year}-${String(item.mes).padStart(2, '0')}-${String(item.dia).padStart(2, '0')}`;
+        const changes = item.changes || {};
+        const isCreate = changes.action === "create";
+
+        const fechaBase = `${changes.year}-${String(changes.mes).padStart(2, '0')}-${String(changes.dia).padStart(2, '0')}`;
+
         return {
-          id: item.id,
-          subject: item.subject || "Asignatura",
-          nombre: item.tipo,
-          aula: item.aula?.trim() || '',
-          fecha,
-          horaInicio: item.hora_inicio,
-          horaFinal: item.hora_final,
-          approved: item.aproved === true,
-          proposed: item.changes || {},
-          action: item.changes?.action || 'modificación',
+          id: item.id ?? changes.id,
+          id_jaja: changes.jaja,
+          action: changes.action || 'modificación',
+          subject: changes.subject?.nombre || item.subject?.nombre || "Asignatura",
+          nombre: changes.tipo || item.tipo || "Tipo",
+          aula_i: isCreate ? null : item.aula?.trim() || '',
+          aula_f: changes.aula?.trim() || '',
+          fecha_i: isCreate ? null : `${item.year}-${String(item.mes).padStart(2, '0')}-${String(item.dia).padStart(2, '0')}`,
+          fecha_f: fechaBase,
+          horaInicio_i: isCreate ? null : item.hora_inicio || '',
+          horaInicio_f: changes.hora_inicio || '',
+          horaFinal_i: isCreate ? null : item.hora_final || '',
+          horaFinal_f: changes.hora_final || '',
+          approved: changes.aproved === true || item.aproved === true,
+          proposed: changes,
         };
       });
-
       setPendingSubjects(parsed.filter(s => !s.approved));
     } catch (err) {
-      console.error("Error al cargar asignaturas pendientes:", err);
+      toast.error("Error al cargar las asignaturas pendientes");
     }
   };
 
-  const handleApprove = async (id) => {
+  const handleApprove = async (id_jaja) => {
     try {
-      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/approve/${id}`, {
-        method: 'POST',
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/approve/${id_jaja}`, {
+        method: 'PATCH',
         credentials: 'include',
       });
 
       if (!res.ok) throw new Error("Error al aprobar la asignatura");
-      setPendingSubjects(prev => prev.filter(s => s.id !== id));
+      toast.success("Asignatura aprobada correctamente");
+      await fetchPending();
     } catch (err) {
-      alert(err.message);
+      toast.error("Error al aprobar la modificación de la asignatura");
     }
   };
 
-  const handleReject = async (id) => {
+  const handleReject = async (id_jaja) => {
     try {
-      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/reject/${id}`, {
-        method: 'POST',
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/reject/${id_jaja}`, {
+        method: 'PATCH',
         credentials: 'include',
       });
 
       if (!res.ok) throw new Error("Error al rechazar la asignatura");
-      setPendingSubjects(prev => prev.filter(s => s.id !== id));
+      toast.success("Asignatura rechazada correctamente");
+      await fetchPending();
     } catch (err) {
-      alert(err.message);
+      toast.error("Error al rechazar la modificación de la asignatura");
     }
   };
 
@@ -94,48 +105,58 @@ export const PendingApprovals = () => {
         ) : (
           <div className="divide-y">
             {pendingSubjects.map(subject => (
-              <div key={subject.id} className="flex justify-between items-start py-4 gap-6">
+              <div key={subject.id_jaja} className="flex justify-between items-start py-4 gap-6">
                 <div>
-                  <p className="font-medium text-yellow-700">
+                  <p className="text-xl font-medium text-yellow-700">
                     {subject.subject} - {subject.nombre}
                   </p>
 
                   <p className="text-sm italic text-blue-500 mb-1">
-                    Acción solicitada: {subject.action === "delete" ? "Eliminación" : "Modificación"}
+                    Acción solicitada: { (subject.action === "create")? "Crear" : subject.action === "delete" ? "Eliminar" : "Modificar"}
                   </p>
 
-                  <p className="text-sm text-gray-600">
-                    {formatFecha(subject.fecha)} a las {subject.horaInicio} – {subject.horaFinal} | Aula: {subject.aula}
-                  </p>
-
-                  {subject.action !== "delete" && subject.proposed && (
+                  {subject.action === "create" ? (
+                    <p className="text-sm text-gray-600">
+                      {formatFecha(subject.fecha_f)} a las {subject.horaInicio_f} – {subject.horaFinal_f} | Aula: {subject.aula_f}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-gray-600">
+                      {formatFecha(subject.fecha_i)} a las {subject.horaInicio_i} – {subject.horaFinal_i} | Aula: {subject.aula_i}
+                    </p>
+                  )}
+                  {/* Cambios propuestos (solo si difieren) */}
+                  {subject.proposed && subject.action === "update" && (
                     <div className="mt-2 text-sm text-yellow-700 space-y-1">
-                      {Object.entries(subject.proposed).map(([key, newValue]) => {
-                        const original = subject[key];
-                        if (newValue === undefined || newValue === original) return null;
+                      {['aula', 'horaInicio', 'horaFinal', 'fecha'].map((key) => {
+                        const original = subject[`${key}_i`];
+                        const nuevo = subject[`${key}_f`];
+
+                        if (!original || original === nuevo) return null;
 
                         return (
                           <p key={key}>
                             <strong>{labels[key] || key}:</strong>{" "}
                             <span className="line-through text-red-500">{original}</span>{" "}
-                            <span className="text-green-600">→ {newValue}</span>
+                            <span className="text-green-600">→ {nuevo}</span>
                           </p>
                         );
                       })}
+
                     </div>
                   )}
+
                 </div>
 
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleApprove(subject.id)}
-                    className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
+                    onClick={() => handleApprove(subject.id_jaja)}
+                    className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600 hover:cursor-pointer"
                   >
                     Aprobar
                   </button>
                   <button
-                    onClick={() => handleReject(subject.id)}
-                    className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                    onClick={() => handleReject(subject.id_jaja)}
+                    className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 hover:cursor-pointer"
                   >
                     Rechazar
                   </button>

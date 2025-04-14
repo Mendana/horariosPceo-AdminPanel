@@ -14,12 +14,14 @@ import PrivateRoute from './PrivateRoute';
 import { MyAccount } from './pages/MyAccount.jsx';
 import { MySubjects } from './pages/MySubjects.jsx';
 import { PendingApprovals } from './pages/PendingApprovals.jsx';
-
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        {/* Configuración de la notificación de react-hot-toast */}
+        <Toaster position='top-center' reverseOrder={false} />
         <Routes>
           {/* Rutas públicas */}
           <Route path="/" element={<Login />} />

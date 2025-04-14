@@ -90,11 +90,10 @@ export const SubjectList = forwardRef((props, ref) => {
     setEditSubject(subject);
   };
 
-  const handleSave = (updatedSubject) => {
-    setSubjects(prev =>
-      prev.map(s => s.id === updatedSubject.id ? updatedSubject : s)
-    );
+  const handleSave = async () => {
+    await fetchSubjects(); // 🔄 vuelve a cargar toda la lista actualizada
   };
+  
 
   const handleDelete = async (id) => {
     try {
