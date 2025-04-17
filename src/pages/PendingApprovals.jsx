@@ -37,6 +37,7 @@ export const PendingApprovals = () => {
           horaFinal_f: changes.hora_final || '',
           approved: changes.aproved === true || item.aproved === true,
           proposed: changes,
+          modifier: changes.usuario_que_modifica,
         };
       });
       setPendingSubjects(parsed.filter(s => !s.approved));
@@ -110,7 +111,7 @@ export const PendingApprovals = () => {
               <div key={subject.id_jaja} className="flex justify-between items-start py-4 gap-6">
                 <div>
                   <p className="text-xl font-medium text-yellow-700">
-                    {subject.subject} - {subject.nombre}
+                    {subject.subject} - {subject.nombre} | Propuesto por: {subject.modifier}
                   </p>
 
                   <p className="text-sm italic text-blue-500 mb-1">
