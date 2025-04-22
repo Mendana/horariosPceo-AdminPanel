@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../styles/login.css";
+import { toast } from 'react-hot-toast';
 
 export const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +42,7 @@ export const SignIn = () => {
 
             if (response.ok) {
                 if (data.requiresVerification) {
-                    alert('Revisa tu correo universitario para verificar tu cuenta antes de iniciar sesión.');
+                    toast.success('Revisa tu correo universitario para verificar tu cuenta antes de iniciar sesión.');
                     navigate('/login');
                 } else {
                     navigate('/schedule');
