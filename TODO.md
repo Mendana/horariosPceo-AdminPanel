@@ -7,14 +7,13 @@
 6. 
 
 # Frontend
-1. Añadir icon
-2. Añadir link de "he olvidado mi contraseña"
-3. Responsive
-4. Filtro de titulación en visualizador de clases ('Horarios')
-5. Modo oscuro
-6. Carga del sidenav haciendo `fetch` por rol
-7. Añadir cosas de cambiar contraseña en el perfil
-8. Quitar donde ponga PCEO
+1. Añadir link de "he olvidado mi contraseña"
+2. Responsive
+3. Filtro de titulación en visualizador de clases ('Horarios')
+4. Modo oscuro
+5. Carga del sidenav haciendo `fetch` por rol
+6. Añadir cosas de cambiar contraseña en el perfil
+7. Quitar donde ponga PCEO
 
 
 # Backend
