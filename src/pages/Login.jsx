@@ -97,6 +97,10 @@ export const Login = () => {
                     <Link to="/signin" className="lost-pwd">
                         <p className="text-gray-600">Crear cuenta</p>
                     </Link>
+                    {/* Lost pwd */}
+                    <button className="lost-pwd" onClick={() => toast.error('Funcionalidad no implementada')}>
+                            <p className="text-gray-600">Recuperar contraseña</p>
+                    </button>
                 </div>
             </section>
         </main>
