@@ -28,11 +28,6 @@ export const ChangePwd = () => {
             return;
         }
 
-        if (password.length < 6) {
-            setError('La contraseña debe tener al menos 6 caracteres');
-            return;
-        }
-
         setLoading(true);
         setError('');
         setMessage('');
