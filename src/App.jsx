@@ -16,6 +16,7 @@ import { MySubjects } from './pages/MySubjects.jsx';
 import { PendingApprovals } from './pages/PendingApprovals.jsx';
 import { Toaster } from 'react-hot-toast';
 import { VerifyEmail } from './pages/VerifyEmail.jsx';
+import { ChangePwd } from './pages/ChangePwd.jsx';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/recover" element={<RecoverPwd />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path='/verify' element={<VerifyEmail />} />
+          <Route path='/reset-password' element={<ChangePwd />} />
 
           {/* Rutas protegidas */}
           <Route
