@@ -55,6 +55,34 @@ export const Login = () => {
         }
     }
 
+    const handlePasswordRecovery = async () => {
+        if (!username) {
+            toast.error('Por favor, introduce tu correo primero');
+            return;
+        }
+
+        try {
+            const response = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: username.split('@')[0]
+                })
+            });
+
+            if (response.ok) {
+                toast.success('Se ha enviado un correo con las instrucciones para recuperar tu contraseña');
+            } else {
+                const data = await response.json();
+                toast.error(data.message || 'Error al enviar el correo de recuperación');
+            }
+        } catch (error) {
+            toast.error('Error de conexión');
+        }
+    };
+
     return (
         <main className="flex flex-row justify-center items-center h-screen bg-gray-100">
             <section className="main-login-container w-150 h-150">
@@ -98,8 +126,12 @@ export const Login = () => {
                         <p className="text-gray-600">Crear cuenta</p>
                     </Link>
                     {/* Lost pwd */}
-                    <button className="lost-pwd" onClick={() => toast.error('Funcionalidad no implementada')}>
-                            <p className="text-gray-600">Recuperar contraseña</p>
+                    <button 
+                        className="lost-pwd" 
+                        onClick={handlePasswordRecovery}
+                        type="button"
+                    >
+                        <p className="text-gray-600">Recuperar contraseña</p>
                     </button>
                 </div>
             </section>
