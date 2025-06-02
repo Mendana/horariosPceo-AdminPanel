@@ -3,6 +3,7 @@ import { SubjectFilters } from './SubjectFilters';
 import { SubjectItem } from './SubjectItem';
 import { Pagination } from './Pagination';
 import { ModalEditor } from './ModalEditor';
+import { usersPerGrade } from '../utils/curses'; // Añade esta importación
 
 const ITEMS_PER_PAGE = 10;
 
@@ -15,8 +16,14 @@ export const SubjectList = forwardRef((props, ref) => {
   };
 
   const [subjects, setSubjects] = useState([]);
+  // Filtro para uos
   const [uoFilter, setUoFilter] = useState(getUserUO());
+
+  // Filtro para grados y luego para los cursos de cada grado
+  const [degreeFilter, setDegreeFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
+
+  //Filtros de búsqueda
   const [nameFilter, setNameFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -141,18 +148,19 @@ export const SubjectList = forwardRef((props, ref) => {
         setDateFilter={(v) => { setDateFilter(v); setCurrentPage(1); }}
         uoFilter={uoFilter}
         setUoFilter={(v) => { setUoFilter(v); setCurrentPage(1); }}
+        degreeFilter={degreeFilter}
+        setDegreeFilter={(v) => { setDegreeFilter(v); setCurrentPage(1); }}
         yearFilter={yearFilter}
         setYearFilter={(v) => {
-          const curso = v
-            ? `curso${v.charAt(0).toUpperCase()}${v.slice(1).toLowerCase()}`
-            : getUserUO();
-        
-          setYearFilter(v);
-          setUoFilter(curso);
-          setCurrentPage(1);
-        
-          // 🚀 Forzar fetch justo después
-          setTimeout(fetchSubjects, 0);
+            const curso = v && degreeFilter 
+                ? usersPerGrade[degreeFilter][v]  // Usa el valor del diccionario
+                : getUserUO();
+            
+            setYearFilter(v);
+            setUoFilter(curso);  // Establece el UO correspondiente al grado y curso
+            setCurrentPage(1);
+            
+            setTimeout(fetchSubjects, 0);
         }}
         userEmail={getUserUO()}
       />

@@ -1,4 +1,5 @@
 import '../styles/subjectList.css';
+import { cursesPerGrade, usersPerGrade } from '../utils/curses';
 
 export function SubjectFilters({
   nameFilter,
@@ -7,6 +8,8 @@ export function SubjectFilters({
   setDateFilter,
   uoFilter,
   setUoFilter,
+  degreeFilter,
+  setDegreeFilter,
   yearFilter,
   setYearFilter,
   userEmail,
@@ -30,7 +33,7 @@ export function SubjectFilters({
       />
       <input
         type="text"
-        placeholder="UO o nombre de perfil"
+        placeholder="Buscar por UO"
         className="input name-filter"
         value={uoFilter}
         onChange={(e) => {
@@ -43,14 +46,33 @@ export function SubjectFilters({
       {!isEstudiante && (
         <select
           className="input date-filter"
+          value={degreeFilter}
+          onChange={(e) => {
+            setDegreeFilter(e.target.value);
+            setYearFilter(''); // Reset del año cuando cambia el grado
+          }}
+        >
+          <option value="">Elige grado</option>
+          {Object.keys(cursesPerGrade).map((grade) => (
+            <option key={grade} value={grade}>
+              {grade}
+            </option>
+          ))}
+        </select>
+      )}
+
+      {!isEstudiante && degreeFilter && (
+        <select
+          className="input date-filter"
           value={yearFilter}
           onChange={(e) => setYearFilter(e.target.value)}
         >
-          <option value="">Todos los cursos</option>
-          <option value="Primero">Primero</option>
-          <option value="Segundo">Segundo</option>
-          <option value="Tercero">Tercero</option>
-          <option value="Cuarto">Cuarto</option>
+          <option value="">Elige curso</option>
+          {cursesPerGrade[degreeFilter]?.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
         </select>
       )}
       <button
