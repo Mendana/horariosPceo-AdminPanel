@@ -16,28 +16,37 @@ export const PendingApprovals = () => {
       const data = await res.json();
 
       const parsed = data.map(item => {
-        const changes = item.changes || {};
-        const isCreate = changes.action === "create";
+        const isCreate = item.action === "create";
+        const isDelete = item.action === "delete";
 
-        const fechaBase = `${changes.year}-${String(changes.mes).padStart(2, '0')}-${String(changes.dia).padStart(2, '0')}`;
+        // Función auxiliar para formatear fecha
+        const formatearFecha = (year, mes, dia) => {
+          if (!year || !mes || !dia) return null;
+          return `${year}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        };
 
         return {
-          id: item.id ?? changes.id,
-          id_jaja: changes.jaja,
-          action: changes.action || 'modificación',
-          subject: changes.subject?.nombre || item.subject?.nombre || "Asignatura",
-          nombre: changes.tipo || item.tipo || "Tipo",
-          aula_i: isCreate ? null : item.aula?.trim() || '',
-          aula_f: changes.aula?.trim() || '',
-          fecha_i: isCreate ? null : `${item.year}-${String(item.mes).padStart(2, '0')}-${String(item.dia).padStart(2, '0')}`,
-          fecha_f: fechaBase,
-          horaInicio_i: isCreate ? null : item.hora_inicio || '',
-          horaInicio_f: changes.hora_inicio || '',
-          horaFinal_i: isCreate ? null : item.hora_final || '',
-          horaFinal_f: changes.hora_final || '',
-          approved: changes.aproved === true || item.aproved === true,
-          proposed: changes,
-          modifier: changes.usuario_que_modifica,
+          id_jaja: item.jaja,
+          action: item.action,
+          subject: isCreate 
+            ? item.new_subject?.nombre 
+            : item.old_subject?.nombre ?? "Asignatura",
+          nombre: isCreate
+            ? item.new_tipo
+            : item.old_tipo ?? "Tipo",
+          // Valores iniciales (old)
+          aula_i: item.old_aula?.trim() ?? null,
+          fecha_i: formatearFecha(item.old_year, item.old_mes, item.old_dia),
+          horaInicio_i: item.old_hora_inicio ?? null,
+          horaFinal_i: item.old_hora_final ?? null,
+          // Valores finales (new)
+          aula_f: item.new_aula?.trim() ?? null,
+          fecha_f: formatearFecha(item.new_year, item.new_mes, item.new_dia),
+          horaInicio_f: item.new_hora_inicio ?? null,
+          horaFinal_f: item.new_hora_final ?? null,
+          // Otros datos
+          approved: item.aproved === true,
+          modifier: item.usuario_que_modifica,
         };
       });
       setPendingSubjects(parsed.filter(s => !s.approved));
@@ -120,12 +129,21 @@ export const PendingApprovals = () => {
 
                   {subject.action === "create" ? (
                     <p className="text-sm text-gray-600">
-                      {formatFecha(subject.fecha_f)} a las {subject.horaInicio_f} – {subject.horaFinal_f} | Aula: {subject.aula_f}
+                      Nueva clase: {formatFecha(subject.fecha_f)} a las {subject.horaInicio_f} – {subject.horaFinal_f} | Aula: {subject.aula_f}
+                    </p>
+                  ) : subject.action === "delete" ? (
+                    <p className="text-sm text-gray-600">
+                      Eliminar clase: {formatFecha(subject.fecha_i)} a las {subject.horaInicio_i} – {subject.horaFinal_i} | Aula: {subject.aula_i}
                     </p>
                   ) : (
-                    <p className="text-sm text-gray-600">
-                      {formatFecha(subject.fecha_i)} a las {subject.horaInicio_i} – {subject.horaFinal_i} | Aula: {subject.aula_i}
-                    </p>
+                    <>
+                      <p className="text-sm text-gray-600">
+                        Original: {formatFecha(subject.fecha_i)} a las {subject.horaInicio_i} – {subject.horaFinal_i} | Aula: {subject.aula_i}
+                      </p>
+                      <p className="text-sm text-green-600">
+                        Nuevo: {formatFecha(subject.fecha_f)} a las {subject.horaInicio_f} – {subject.horaFinal_f} | Aula: {subject.aula_f}
+                      </p>
+                    </>
                   )}
                   {/* Cambios propuestos (solo si difieren) */}
                   {subject.proposed && subject.action === "update" && (
