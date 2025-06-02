@@ -35,12 +35,15 @@ export const SubjectList = forwardRef((props, ref) => {
 
   const fetchSubjects = async () => {
     try {
-      const uoFinal = yearFilter
-        ? `curso${capitalize(yearFilter)}`
+      // Si hay grado y curso seleccionados, usa el valor del diccionario
+      const uoFinal = yearFilter && degreeFilter
+        ? usersPerGrade[degreeFilter][yearFilter]
         : debouncedUO;
   
       const baseUrl = `https://horariospceo.ingenieriainformatica.uniovi.es/schedule/userSchedule/${encodeURIComponent(uoFinal)}`;
-  
+
+      console.log("Fetching subjects for:", baseUrl);
+      
       const res = await fetch(baseUrl, {
         method: 'GET',
         credentials: 'include',
