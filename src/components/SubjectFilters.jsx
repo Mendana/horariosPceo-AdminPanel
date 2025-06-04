@@ -17,7 +17,8 @@ export function SubjectFilters({
   const isEstudiante = /^uo\d{4,6}@uniovi\.es$/.test(userEmail);
 
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4 mb-4">
+    <div className="flex flex-col items-start mb-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4 w-full">
       <input
         type="text"
         placeholder="Buscar por nombre"
@@ -75,17 +76,20 @@ export function SubjectFilters({
           ))}
         </select>
       )}
-      <button
-        className="btn clear-filters"
-        onClick={() => {
-          setNameFilter('');
-          setDateFilter('');
-          setUoFilter(userEmail); // reinicia UO
-          setYearFilter('');
-        }}
-      >
-        Limpiar filtros
-      </button>
+    </div>
+      <div className="grid justify-end items-end w-full">
+        <button
+            className="btn clear-filters"
+            onClick={() => {
+              setNameFilter('');
+              setDateFilter('');
+              setUoFilter(userEmail); // reinicia UO
+              setYearFilter('');
+            }}
+          >
+            Limpiar filtros
+          </button>
+      </div>
     </div>
   );
 }

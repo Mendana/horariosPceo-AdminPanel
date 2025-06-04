@@ -127,15 +127,15 @@ export function CreateSubject({ onCreated }) {
   };
 
   return (
-    <section className="main-create-subject w-[90%] flex flex-col gap-4 px-8 py-5">
-      <h1 className='text-2xl font-semibold'>Añadir clases/exámenes</h1>
+    <section className="main-create-subject w-[90%] flex flex-col gap-4 px-4 py-2 sm:px-8 sm:py-5">
+      <h1 className='text-xl sm:text-2xl font-semibold'>Añadir clases/exámenes</h1>
       {error && <p className="text-red-500">{error}</p>}
       <form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
         <div className='flex flex-col md:flex-row gap-4'>
           <div className='flex flex-col flex-1'>
             <label className="text-sm font-medium mb-3">Asignatura:</label>
             <select
-              className="input name-filter w-[75%]"
+              className="input name-filter w-[100%]"
               value={selectedSubject}
               onChange={(e) => {
                 setSelectedSubject(e.target.value);
@@ -152,7 +152,7 @@ export function CreateSubject({ onCreated }) {
           <div className='flex flex-col flex-1'>
             <label className="text-sm font-medium mb-3">Tipo:</label>
             <select
-              className="input name-filter w-[75%]"
+              className="input name-filter w-[100%]"
               value={selectedTipo}
               onChange={(e) => setSelectedTipo(e.target.value)}
               disabled={!selectedSubject}
@@ -168,7 +168,7 @@ export function CreateSubject({ onCreated }) {
             <label className="text-sm font-medium mb-3">Aula:</label>
             <input
               type="text"
-              className="input name-filter w-[75%]"
+              className="input name-filter w-[100%]"
               placeholder="Ej: A-2-01"
               value={aula}
               onChange={(e) => setAula(e.target.value)}
@@ -181,7 +181,7 @@ export function CreateSubject({ onCreated }) {
             <label className="text-sm font-medium mb-3">Fecha:</label>
             <input
               type="date"
-              className="input name-filter w-[75%]"
+              className="input name-filter w-[100%]"
               value={fecha}
               onChange={(e) => setFecha(e.target.value)}
             />
@@ -198,7 +198,7 @@ export function CreateSubject({ onCreated }) {
           </div>
         </div>
 
-        <section className='flex flex-row justify-end items-center pt-5'>
+        <section className='flex flex-row w-full items-center pt-5'>
           <button type="submit" className='submit-button'>Añadir</button>
         </section>
       </form>
