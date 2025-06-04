@@ -30,6 +30,10 @@ export function UserList() {
   };
 
   const handleEdit = (user) => {
+    if (!currentUser?.role === 'admin') {
+      toast.error('No tienes permisos para editar usuarios');
+      return;
+    }
     setEditUser(user);
   };
 
@@ -42,12 +46,7 @@ export function UserList() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        // Solo los admins pueden ver todos los usuarios
-        const endpoint = currentUser?.role === 'admin' 
-          ? 'https://horariospceo.ingenieriainformatica.uniovi.es/users'
-          : 'https://horariospceo.ingenieriainformatica.uniovi.es/users/basic';
-
-        const res = await fetch(endpoint, {
+        const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -73,9 +72,13 @@ export function UserList() {
     };
   
     fetchUsers();
-  }, [currentUser]);
+  }, []);  // Removida la dependencia de currentUser
 
   const handleDelete = async (email) => {
+    if (!currentUser?.role === 'admin') {
+      toast.error('No tienes permisos para eliminar usuarios');
+      return;
+    }
     try {
       const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/users/delete/${email}`, {
         method: 'DELETE',
