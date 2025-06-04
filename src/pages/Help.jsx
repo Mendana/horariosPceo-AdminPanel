@@ -1,4 +1,4 @@
-import '../styles/aboutUs.css';
+import '../styles/help.css';
 import { AiOutlineGithub } from 'react-icons/ai';
 import { HeaderNav } from '../components/HeaderNav.jsx';
 
@@ -7,10 +7,10 @@ export const Help = () => {
         <section>
             <HeaderNav title='Ayuda'></HeaderNav>
             <section className='flex flex-col items-center justify-center'>
-                <article className="about-div mb-10 mt-10">
-                    <h2>¿Necesitas ayuda?</h2>
+                <article className="info-div mb-10 mt-10">
+                    <h2 className='text-lg md:text-xl'>¿Necesitas ayuda?</h2>
 
-                    <p className="main-text mb-4">
+                    <p className="main-text text-base md:text-lg mb-4">
                         Si tienes dudas sobre cómo funciona esta herramienta o te has encontrado con algún problema, aquí tienes algunas respuestas rápidas que podrían ayudarte.
                     </p>
 
