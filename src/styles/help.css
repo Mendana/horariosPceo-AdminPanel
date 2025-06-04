@@ -23,10 +23,10 @@
     color: var(--main-white);
     border: 2px solid #cfcfcf;
     box-shadow: 0 0px 11px rgba(0, 0, 0, 0.2);
-    padding: 5px 8px;
+    padding: 10px 16px;
     min-width: 200px;
     width: 47%;
-    max-width: 400px;
+    max-width: 250px;
     border-radius: 10px;
     font-size: 16px;
     font-weight: 500;
@@ -47,30 +47,12 @@
     transition: color 0.3s ease;
 }
 
-.github-button-disabled {
-    background-color: #7a7a7a;
-    color: var(--main-white);
-    border: 2px solid #cfcfcf;
-    padding: 10px 16px;
-    width: 47%;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-
 @media (min-width: 768px) {
     .info-div h2 {
         font-weight: 700;
     }
 
     .github-button {
-        padding: 10px 16px;
         margin-top: 10px;
     }
 }
