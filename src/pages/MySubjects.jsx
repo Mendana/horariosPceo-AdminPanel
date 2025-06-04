@@ -31,6 +31,16 @@ export function MySubjects() {
           </p>
         </article>
 
+        <article className="about-div">
+          <h2>Copiar distribuciones</h2>
+          <p className="main-text">
+            Si todo esto te parece un poco complicado (o más bien un rollo), puedes ir a la sección de <a href="/users" className="text-[var(--main-blue)]">usuarios</a> y copiar las distribuciones de asignaturas de otros usuarios. Esto te copiará su distribución de asignaturas y podrás verlas o modificarlas como quieras.
+          </p>
+          <p className="main-text">
+            Revisa si quieres las asignaturas de otro usuario a través del <a href="https://horariospceo.web.app" target="_blank" rel="noopener noreferrer" className="text-[var(--main-blue)]">visualizador de horarios</a> antes de copiarlas para comprobar que son las que quieres. También, puedes usarlo como base para crear tu propia distribución de asignaturas ya que podrás seguir modificándolas después de copiarlas.
+          </p>
+        </article>
+
         <article className="about-div w-full mb-10">
           <SubjectGroupSelectorList
             ref={selectorRef}
