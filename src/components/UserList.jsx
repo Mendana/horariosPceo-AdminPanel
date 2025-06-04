@@ -114,8 +114,8 @@ export function UserList() {
   };
 
   return (
-    <section className="w-[90%] mt-10 px-8 py-5 border rounded-xl bg-white shadow-md">
-      <h2 className='text-xl font-semibold mb-4'>Usuarios registrados</h2>
+    <section className="w-[90%] mt-10 px-5 md:px-8 py-5 border rounded-xl bg-white shadow-md">
+      <h2 className='text-lg md:text-xl font-semibold mb-4'>Usuarios registrados</h2>
 
       <UserFilters
         emailFilter={emailFilter}

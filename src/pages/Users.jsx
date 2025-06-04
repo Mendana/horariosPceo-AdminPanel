@@ -5,7 +5,7 @@ export const Users = () => {
   return (
     <section>
       <HeaderNav title='Administración de Usuarios' />
-      <section className="flex flex-col items-center pt-10 pb-15">
+      <section className="flex flex-col items-center md:pt-10 pb-15">
         <UserList />
       </section>
     </section>
