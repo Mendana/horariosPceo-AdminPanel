@@ -15,6 +15,7 @@ export function UserList() {
   const [roleFilter, setRoleFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [editUser, setEditUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const filteredUsers = users.filter(u =>
     (!emailFilter || u.email.toLowerCase().includes(emailFilter.toLowerCase())) &&
@@ -30,7 +31,7 @@ export function UserList() {
   };
 
   const handleEdit = (user) => {
-    if (!currentUser?.role === 'admin') {
+    if (!isAdmin) {
       toast.error('No tienes permisos para editar usuarios');
       return;
     }
@@ -44,38 +45,53 @@ export function UserList() {
   };  
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const initializeList = async () => {
       try {
-        const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users', {
+        // Primero verificamos el rol
+        const roleRes = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users/rol', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!roleRes.ok) {
+          throw new Error('No se pudo verificar el rol');
+        }
+
+        const roleData = await roleRes.json();
+        const isAdminUser = roleData.rol === 'admin';
+        setIsAdmin(isAdminUser);
+
+        // Después cargamos los usuarios
+        const usersRes = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
           },
           credentials: 'include',
         });
-  
-        if (!res.ok) {
+
+        if (!usersRes.ok) {
           throw new Error('No se pudo obtener la lista de usuarios');
         }
         
-        const data = await res.json();
-        
-        const parsedUsers = data.map(user => ({
+        const userData = await usersRes.json();
+        const parsedUsers = userData.map(user => ({
           email: user.email,
           role: user.rol,
         }));
 
         setUsers(parsedUsers);
       } catch (err) {
-        toast.error('Error al cargar los usuarios.');
+        console.error('Error:', err);
+        toast.error('Error al cargar la información.');
       }
     };
-  
-    fetchUsers();
-  }, []);  // Removida la dependencia de currentUser
+
+    initializeList();
+  }, []);  // Solo se ejecuta al montar el componente
 
   const handleDelete = async (email) => {
-    if (!currentUser?.role === 'admin') {
+    if (!isAdmin) {
       toast.error('No tienes permisos para eliminar usuarios');
       return;
     }
@@ -118,6 +134,7 @@ export function UserList() {
               user={user}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              isAdmin={isAdmin}
             />
           ))
         )}

@@ -2,13 +2,13 @@ import { useAuth } from '../AuthContext';
 import { toast } from 'react-hot-toast';
 import { Copy, Pencil, Trash2 } from 'lucide-react';
 
-export function UserItem({ user, onEdit, onDelete }) {
+export function UserItem({ user, onEdit, onDelete, isAdmin }) {
   const { user: currentUser } = useAuth();
-  const isAdmin = currentUser?.role === 'admin';
+  const isCurrentUserAdmin = currentUser?.role === 'admin';
 
   const handleCopySchedule = async () => {
     try {
-      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/copy/${user.email}`, {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/copiar?email1=${user.email}&email2=${currentUser.email}`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -26,24 +26,26 @@ export function UserItem({ user, onEdit, onDelete }) {
   return (
     <div className="flex items-center justify-between py-4">
       <div>
-        <p className="text-gray-800">{user.email}</p>
+        <p className="text-gray-800 font-semibold text-xl">{user.email}</p>
         <p className="text-sm text-gray-500">{user.role}</p>
       </div>
       
       <div className="flex gap-2">
+        {/* Botón de copiar siempre visible */}
         <button
           onClick={handleCopySchedule}
-          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors cursor-pointer"
           title="Copiar horario"
         >
           <Copy size={20} />
         </button>
 
+        {/* Botones de admin solo si isAdmin es true */}
         {isAdmin && (
           <>
             <button
               onClick={() => onEdit(user)}
-              className="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition-colors"
+              className="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
               title="Editar usuario"
             >
               <Pencil size={20} />
@@ -51,7 +53,7 @@ export function UserItem({ user, onEdit, onDelete }) {
             
             <button
               onClick={() => onDelete(user.email)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+              className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
               title="Eliminar usuario"
             >
               <Trash2 size={20} />
