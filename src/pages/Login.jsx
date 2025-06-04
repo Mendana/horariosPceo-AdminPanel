@@ -85,7 +85,7 @@ export const Login = () => {
 
     return (
         <main className="flex flex-row justify-center items-center min-h-screen px-5 bg-gray-100">
-            <section className="main-login-container px-14 py-10 sm:px-18 sm:py-14 md:px-22 md:py-18 lg:px-26 lg:py-22 rounded-lg shadow-md bg-gray-100">
+            <section className="main-login-container px-14 py-10 sm:px-18 sm:py-14 md:px-22 md:py-18 lg:px-26 lg:py-24 max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl w-full rounded-lg shadow-md bg-gray-100">
                 <div className="flex flex-col justify-center items-center gap-5">
                     <h1 className="text-3xl md:text-4xl font-bold mb-5 text-center">Iniciar Sesión</h1>
                     {error && <p className="text-red-500 text-center">{error}</p>}
@@ -108,7 +108,7 @@ export const Login = () => {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-2 top-2/5 -translate-y-1/2 bg-white border-none cursor-pointer p-1"
+                                className="absolute right-2 top-3/7 -translate-y-1/2 bg-white border-none cursor-pointer p-1"
                             >
                                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
