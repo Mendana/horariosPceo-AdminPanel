@@ -51,7 +51,7 @@ export function UserModalEditor({ user, onClose, onSave }) {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full z-40 pointer-events-none backdrop-blur-xs bg-black/30">
-      <div className="absolute top-[20%] left-1/2 transform -translate-x-1/2 w-full max-w-md z-50 pointer-events-auto">
+      <div className="absolute top-[20%] left-1/2 transform -translate-x-1/2 w-[90%] md:w-full max-w-md z-50 pointer-events-auto">
         <div className="bg-white p-6 rounded-xl shadow-2xl border">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Editar usuario</h2>

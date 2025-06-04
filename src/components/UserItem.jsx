@@ -26,7 +26,7 @@ export function UserItem({ user, onEdit, onDelete, isAdmin }) {
   return (
     <div className="flex items-center justify-between py-4">
       <div>
-        <p className="text-gray-800 font-semibold text-xl">{user.email}</p>
+        <p className="text-gray-800 font-semibold md:text-xl">{user.email}</p>
         <p className="text-sm text-gray-500">{user.role}</p>
       </div>
       
@@ -34,7 +34,7 @@ export function UserItem({ user, onEdit, onDelete, isAdmin }) {
         {/* Botón de copiar siempre visible */}
         <button
           onClick={handleCopySchedule}
-          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors cursor-pointer"
+          className="p-1 md:p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors cursor-pointer"
           title="Copiar horario"
         >
           <Copy size={20} />
@@ -45,7 +45,7 @@ export function UserItem({ user, onEdit, onDelete, isAdmin }) {
           <>
             <button
               onClick={() => onEdit(user)}
-              className="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
+              className="p-1 md:p-2 text-gray-600 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
               title="Editar usuario"
             >
               <Pencil size={20} />
@@ -53,7 +53,7 @@ export function UserItem({ user, onEdit, onDelete, isAdmin }) {
             
             <button
               onClick={() => onDelete(user.email)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
+              className="p-1 md:p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
               title="Eliminar usuario"
             >
               <Trash2 size={20} />
