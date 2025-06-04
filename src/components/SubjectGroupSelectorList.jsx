@@ -47,9 +47,9 @@ export const SubjectGroupSelectorList = forwardRef(({ fetchData }, ref) => {
 
   return (
     <section className="w-full">
-      <h2 className="text-xl font-semibold mb-4">Selecciona tus grupos</h2>
+      <h2 className="text-lg md:text-xl font-semibold mb-4">Selecciona tus grupos</h2>
 
-      <div className="mb-4 flex flex-row items-center justify-start gap-4">
+      <div className="flex flex-col md:flex-row items-center justify-start mb-4 gap-4">
         <div>
           <input
             type="text"
