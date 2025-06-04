@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { HeaderNav } from "../components/HeaderNav.jsx";
-import "../styles/aboutUs.css";
+import "../styles/mySubjects.css";
 import { SubjectGroupSelectorList } from "../components/SubjectGroupSelectorList.jsx";
 import { toast } from "react-hot-toast";
 
@@ -20,28 +20,28 @@ export function MySubjects() {
   return (
     <div>
       <HeaderNav title={`Mis Asignaturas - ${getUserName()}`} />
-      <div className="flex flex-col items-center pt-10 gap-10">
-        <article className="about-div">
-          <h2>¿Qué es esto?</h2>
-          <p className="main-text">
+      <div className="flex flex-col items-center pt-10  gap-5 md:gap-10">
+        <article className="info-div">
+          <h2 className="text-lg md:text-xl">¿Qué es esto?</h2>
+          <p className="main-text text-base md:text-lg">
             Aquí puedes seleccionar las asignaturas que quieres ver en tu horario, tanto si eres administrador y quieres poder gestionarlas aquí como si quieres poder verlas con tu UO en <a href="https://horariospceo.web.app" target="_blank" rel="noopener noreferrer" className="text-[var(--main-blue)]">horariospceo.web.app</a>. Podrás seleccionar cualquier clase que curses y cambiarlo en cualquier momento.
           </p>
-          <p className="main-text">
+          <p className="main-text text-base md:text-lg">
             Para ello, aunque sea un poco rudimentario, podrás comprobar en tus calendarios (de informática y de ciencias) en qué grupo estás en cada asignatura (en ciencias lo más probable es que seas el grupo 1). Así, una vez hayas seleccionado las asignaturas y hayas guardado los cambios, estas serán tus asignaturas por defecto y podrás verlas en tu horario.
           </p>
         </article>
 
-        <article className="about-div">
-          <h2>Copiar distribuciones</h2>
-          <p className="main-text">
+        <article className="info-div">
+          <h2 className="text-lg md:text-xl">Copiar distribuciones</h2>
+          <p className="main-text text-base md:text-lg">
             Si todo esto te parece un poco complicado (o más bien un rollo), puedes ir a la sección de <a href="/users" className="text-[var(--main-blue)]">usuarios</a> y copiar las distribuciones de asignaturas de otros usuarios. Esto te copiará su distribución de asignaturas y podrás verlas o modificarlas como quieras.
           </p>
-          <p className="main-text">
+          <p className="main-text text-base md:text-lg">
             Revisa si quieres las asignaturas de otro usuario a través del <a href="https://horariospceo.web.app" target="_blank" rel="noopener noreferrer" className="text-[var(--main-blue)]">visualizador de horarios</a> antes de copiarlas para comprobar que son las que quieres. También, puedes usarlo como base para crear tu propia distribución de asignaturas ya que podrás seguir modificándolas después de copiarlas.
           </p>
         </article>
 
-        <article className="about-div w-full mb-10">
+        <article className="info-div w-full mb-10">
           <SubjectGroupSelectorList
             ref={selectorRef}
             fetchData={async () => {

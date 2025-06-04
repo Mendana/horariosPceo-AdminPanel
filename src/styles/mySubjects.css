@@ -1,0 +1,25 @@
+.info-div {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 0px 11px rgba(0, 0, 0, 0.5);
+    padding: 25px;
+    width: 90%;
+}
+
+.info-div h2 {
+    font-weight: 600;
+    padding-bottom: 10px;
+}
+
+.info-div .main-text {
+    line-height: 1.5;
+    padding-bottom: 10px;
+    hyphens: auto;
+}
+
+
+@media (min-width: 768px) {
+    .info-div h2 {
+        font-weight: 700;
+    }
+}
