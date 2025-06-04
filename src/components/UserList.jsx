@@ -4,10 +4,12 @@ import { UserItem } from './UserItem';
 import { Pagination } from './Pagination';
 import { UserModalEditor } from './UserModalEditor';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '../AuthContext';
 
 const ITEMS_PER_PAGE = 10;
 
 export function UserList() {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [emailFilter, setEmailFilter] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
@@ -40,7 +42,12 @@ export function UserList() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch('https://horariospceo.ingenieriainformatica.uniovi.es/users', {
+        // Solo los admins pueden ver todos los usuarios
+        const endpoint = currentUser?.role === 'admin' 
+          ? 'https://horariospceo.ingenieriainformatica.uniovi.es/users'
+          : 'https://horariospceo.ingenieriainformatica.uniovi.es/users/basic';
+
+        const res = await fetch(endpoint, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -66,7 +73,7 @@ export function UserList() {
     };
   
     fetchUsers();
-  }, []);
+  }, [currentUser]);
 
   const handleDelete = async (email) => {
     try {
@@ -77,7 +84,7 @@ export function UserList() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || 'No se pudo eliminar la asignatura');
+        throw new Error(data.message || 'No se pudo eliminar el usuario');
       }
 
       setUsers(prev => prev.filter(u => u.email !== email));

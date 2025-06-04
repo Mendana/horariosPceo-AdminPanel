@@ -1,26 +1,63 @@
+import { useAuth } from '../AuthContext';
+import { toast } from 'react-hot-toast';
+import { Copy, Pencil, Trash2 } from 'lucide-react';
+
 export function UserItem({ user, onEdit, onDelete }) {
+  const { user: currentUser } = useAuth();
+  const isAdmin = currentUser?.role === 'admin';
+
+  const handleCopySchedule = async () => {
+    try {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/copy/${user.email}`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        throw new Error('Error al copiar el horario');
+      }
+
+      toast.success('Horario copiado correctamente');
+    } catch (err) {
+      toast.error('Error al copiar el horario');
+    }
+  };
+
   return (
-    <div className="flex justify-between items-center py-3">
+    <div className="flex items-center justify-between py-4">
       <div>
-        <p className="font-medium">{user.email}</p>
-        <p className="text-sm text-gray-600">
-          {user.email}  |  Rol: {user.role === 'professor' ? 'editor' : user.role}
-        </p>
+        <p className="text-gray-800">{user.email}</p>
+        <p className="text-sm text-gray-500">{user.role}</p>
       </div>
-      <div className="flex flex-row gap-2 items-center">
+      
+      <div className="flex gap-2">
         <button
-          onClick={() => onDelete(user.email)}
-          className="text-red-500 hover:underline text-sm cursor-pointer"
+          onClick={handleCopySchedule}
+          className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+          title="Copiar horario"
         >
-          Eliminar
+          <Copy size={20} />
         </button>
-        <p>|</p>
-        <button
-          onClick={() => onEdit(user)}
-          className="text-blue-600 hover:underline text-sm cursor-pointer"
-        >
-          Editar
-        </button>
+
+        {isAdmin && (
+          <>
+            <button
+              onClick={() => onEdit(user)}
+              className="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition-colors"
+              title="Editar usuario"
+            >
+              <Pencil size={20} />
+            </button>
+            
+            <button
+              onClick={() => onDelete(user.email)}
+              className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+              title="Eliminar usuario"
+            >
+              <Trash2 size={20} />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
