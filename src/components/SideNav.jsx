@@ -18,7 +18,7 @@ export const SideNav = () => {
 
     return (
         <aside
-            className={`${collapsed ? 'w-17 items-center' : 'w-64 expanded'
+            className={`${collapsed ? 'w-17 items-center relative z-10' : 'w-64 expanded absolute z-50 top-0 left-0'
                 } nav-aside text-white h-screen p-4 flex flex-col`}
         >
             <div className="flex justify-between items-center mb-6">

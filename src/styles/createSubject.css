@@ -11,6 +11,7 @@ form .submit-button {
     padding: 10px 20px;
     border: none;
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    width: 100%;
 }
 
 form .submit-button:hover {

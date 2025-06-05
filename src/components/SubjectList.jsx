@@ -141,8 +141,8 @@ export const SubjectList = forwardRef((props, ref) => {
   }, [uoFilter]);
 
   return (
-    <section className="w-[90%] mt-10 px-8 py-5 border rounded-xl bg-white shadow-md">
-      <h2 className='text-xl font-semibold mb-4'>Clases programadas</h2>
+    <section className="w-[90%] mt-10 px-8 py-5 rounded-xl bg-white shadow-md main-create-subject">
+      <h2 className='text-xl sm:text-2xl font-semibold mb-4'>Clases programadas</h2>
 
       <SubjectFilters
         nameFilter={nameFilter}
