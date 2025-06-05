@@ -109,17 +109,17 @@ export const PendingApprovals = () => {
   return (
     <section>
       <HeaderNav title="Asignaturas Pendientes de Aprobación" />
-      <section className="w-[90%] mt-10 px-8 py-5 mx-auto border rounded-xl bg-white shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Clases propuestas pendientes</h2>
+      <section className="w-[90%] mt-10 px-5 md:px-8 py-5 mx-auto border rounded-xl bg-white shadow-md">
+        <h2 className="text-lg md:text-xl font-semibold mb-4">Clases propuestas pendientes</h2>
 
         {pendingSubjects.length === 0 ? (
           <p className="text-gray-500">No hay clases pendientes de confirmación.</p>
         ) : (
           <div className="divide-y">
             {pendingSubjects.map(subject => (
-              <div key={subject.id_jaja} className="flex justify-between items-start py-4 gap-6">
+              <div key={subject.id_jaja} className="flex flex-col items-center md:flex-row justify-between md:items-start py-4 gap-3 md:gap-6">
                 <div>
-                  <p className="text-xl font-medium text-yellow-700">
+                  <p className="text-base sm:text-lg md:text-xl font-medium text-yellow-700">
                     {subject.subject} - {subject.nombre} | Propuesto por: {subject.modifier}
                   </p>
 
