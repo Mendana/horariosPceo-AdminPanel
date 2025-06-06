@@ -30,7 +30,7 @@ Estudiantes del **Doble Grado en Ingeniería Informática y Matemáticas (PCEO)*
 ---
 
 ## 🌐 Enlace
-La página se encuentra disponible en [horariospceo.com](https://horariospceo.com).
+La página se encuentra disponible en [este enlace](https://horariospceo.com).
 
 ---
 ## 🛠️ Tecnologías utilizadas
