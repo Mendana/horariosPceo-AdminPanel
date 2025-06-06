@@ -29,6 +29,10 @@ Estudiantes del **Doble Grado en Ingeniería Informática y Matemáticas (PCEO)*
 
 ---
 
+## 🌐 Enlace
+La página se encuentra disponible en [horariospceo.com](https://horariospceo.com).
+
+---
 ## 🛠️ Tecnologías utilizadas
 
 | Tecnología         | Descripción                                      |
@@ -77,10 +81,3 @@ Abre http://localhost:5173 en tu navegador.
 
 ## 📄 Licencia
 Este proyecto está bajo la licencia MIT.
-
----
-
-## 🌐 Enlace
-> La aplicación aún no está desplegada públicamente.
-> 
-> Puedes ejecutarla localmente siguiendo las instrucciones de arriba.
