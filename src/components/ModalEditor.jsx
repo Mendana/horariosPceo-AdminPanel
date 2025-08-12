@@ -120,10 +120,10 @@ export function ModalEditor({ subject, onClose, onSave }) {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full z-40 pointer-events-none backdrop-blur-xs bg-black/30">
-      <div className="absolute top-[20%] left-1/2 transform -translate-x-1/2 w-full max-w-md z-50 pointer-events-auto">
+      <div className="absolute top-[20%] left-1/2 transform -translate-x-1/2 w-[80%] max-w-md sm:max-w-[80%] z-50 pointer-events-auto">
         <div className="bg-white p-6 rounded-xl shadow-2xl border">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">Editar asignatura</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold">Editar asignatura</h2>
             <button onClick={onClose} className="text-gray-500 hover:text-black text-xl font-bold">
               <X size={30} />
             </button>
@@ -158,7 +158,7 @@ export function ModalEditor({ subject, onClose, onSave }) {
               onChange={handleChange}
               className="input-field"
             />
-            <div className="flex justify-center gap-5">
+            <div className="flex flex-col items-center sm:flex-row justify-center gap-5">
               <div className='flex flex-row gap-2 items-center'>
                 <label className="text-gray-700">Hora Inicio:</label>
                 <TimePicker value={edited.horaInicio} onChange={handleTimeChange} />
