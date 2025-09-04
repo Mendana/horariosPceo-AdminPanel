@@ -45,6 +45,7 @@ export const SignIn = () => {
                     toast.success('Revisa tu correo universitario para verificar tu cuenta antes de iniciar sesión.');
                     navigate('/login');
                 } else {
+                    toast.success('Cuenta creada exitosamente. Redirigiendo...');
                     navigate('/schedule');
                 }
             } else {

@@ -18,7 +18,7 @@ export function UserFilters({ emailFilter, setEmailFilter, roleFilter, setRoleFi
         <option value="">Todos los roles</option>
         <option value="admin">Administrador</option>
         <option value="user">Usuario</option>
-        <option value="guest">Invitado</option>
+        <option value="professor">Profesor</option>
       </select>
       <button
         className="btn clear-filters"

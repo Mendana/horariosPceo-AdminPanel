@@ -81,7 +81,7 @@ export function UserModalEditor({ user, onClose, onSave }) {
             >
               <option value="">Seleccionar rol</option>
               <option value="admin">Administrador</option>
-              <option value="professor">Editor</option>
+              <option value="professor">Profesor</option>
               <option value="user">Usuario</option>
             </select>
           </div>
