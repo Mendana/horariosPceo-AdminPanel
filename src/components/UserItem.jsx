@@ -8,7 +8,7 @@ export function UserItem({ user, onEdit, onDelete, isAdmin }) {
 
   const handleCopySchedule = async () => {
     try {
-      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/copiar?email1=${user.email}&email2=${currentUser.email}`, {
+      const res = await fetch(`https://horariospceo.ingenieriainformatica.uniovi.es/schedule/copiar?email1=${user.email}&email2=${currentUser.email.split('@')[0]}`, {
         method: 'POST',
         credentials: 'include',
       });
@@ -29,7 +29,7 @@ export function UserItem({ user, onEdit, onDelete, isAdmin }) {
         <p className="text-gray-800 font-semibold md:text-xl">{user.email}</p>
         <p className="text-sm text-gray-500">{user.role}</p>
       </div>
-      
+
       <div className="flex gap-2">
         {/* Botón de copiar siempre visible */}
         <button
@@ -50,7 +50,7 @@ export function UserItem({ user, onEdit, onDelete, isAdmin }) {
             >
               <Pencil size={20} />
             </button>
-            
+
             <button
               onClick={() => onDelete(user.email)}
               className="p-1 md:p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors cursor-pointer"
