@@ -14,7 +14,8 @@ export function SubjectGroupRow({
   onToggleExpand,
   selectedSubjects,
   onToggleSubject,
-  searchFilter
+  searchFilter,
+  disabled = false
 }) {
   const filteredTipos = tipos.filter(tipo =>
     subject.toLowerCase().includes(searchFilter.toLowerCase()) ||
@@ -31,7 +32,11 @@ export function SubjectGroupRow({
 
   return (
     <div>
-      <button onClick={onToggleExpand} className="w-full text-left py-3 flex items-center justify-between font-semibold text-gray-800 hover:bg-gray-100 cursor-pointer rounded-md">
+      <button 
+        onClick={onToggleExpand} 
+        disabled={disabled}
+        className="w-full text-left py-3 flex items-center justify-between font-semibold text-gray-800 hover:bg-gray-100 cursor-pointer rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+      >
         <span className={hasAnySelected ? "text-[var(--main-blue)]" : ""}>
           {subjectLabel}
         </span>
@@ -50,6 +55,7 @@ export function SubjectGroupRow({
                   subjectKey={key}
                   isSelected={selectedSubjects.includes(key)}
                   onToggle={() => onToggleSubject(key)}
+                  disabled={disabled}
                 />
               );
             })}
